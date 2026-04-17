@@ -44,21 +44,23 @@ function detectRegimes(data) {
   return areas
 }
 
+// All 14 FOMC events — only 4 carry an inline label (first hike, peak, last hike, first cut)
+// to avoid overlapping text in the tightly-packed 2022-2023 cluster.
 const FOMC_EVENTS = [
-  { date: '2022-03-01', label: '+25bp', type: 'hike' },
-  { date: '2022-05-01', label: '+50bp', type: 'hike' },
-  { date: '2022-06-01', label: '+75bp', type: 'hike' },
-  { date: '2022-07-01', label: '+75bp', type: 'hike' },
-  { date: '2022-09-01', label: '+75bp', type: 'hike' },
-  { date: '2022-11-01', label: '+75bp', type: 'hike' },
-  { date: '2022-12-01', label: '+50bp', type: 'hike' },
-  { date: '2023-02-01', label: '+25bp', type: 'hike' },
-  { date: '2023-03-01', label: '+25bp', type: 'hike' },
-  { date: '2023-05-01', label: '+25bp', type: 'hike' },
-  { date: '2023-07-01', label: '+25bp', type: 'hike' },
-  { date: '2024-09-01', label: '−50bp', type: 'cut' },
-  { date: '2024-11-01', label: '−25bp', type: 'cut' },
-  { date: '2024-12-01', label: '−25bp', type: 'cut' },
+  { date: '2022-03-01', label: 'First hike', type: 'hike', showLabel: true  },
+  { date: '2022-05-01', label: '+50bp',       type: 'hike', showLabel: false },
+  { date: '2022-06-01', label: '+75bp',        type: 'hike', showLabel: true  },
+  { date: '2022-07-01', label: '+75bp',        type: 'hike', showLabel: false },
+  { date: '2022-09-01', label: '+75bp',        type: 'hike', showLabel: false },
+  { date: '2022-11-01', label: '+75bp',        type: 'hike', showLabel: false },
+  { date: '2022-12-01', label: '+50bp',        type: 'hike', showLabel: false },
+  { date: '2023-02-01', label: '+25bp',        type: 'hike', showLabel: false },
+  { date: '2023-03-01', label: '+25bp',        type: 'hike', showLabel: false },
+  { date: '2023-05-01', label: '+25bp',        type: 'hike', showLabel: false },
+  { date: '2023-07-01', label: 'Last hike',   type: 'hike', showLabel: true  },
+  { date: '2024-09-01', label: 'First cut',   type: 'cut',  showLabel: true  },
+  { date: '2024-11-01', label: '−25bp',        type: 'cut',  showLabel: false },
+  { date: '2024-12-01', label: '−25bp',        type: 'cut',  showLabel: false },
 ]
 
 // ── Anomaly detection ─────────────────────────────────────────────────────────
@@ -253,13 +255,15 @@ export default function MultiLineChart({ data, seriesMeta, projection = [] }) {
               stroke={ev.type === 'hike' ? 'rgba(239,68,68,0.35)' : 'rgba(16,185,129,0.35)'}
               strokeWidth={1}
               strokeDasharray="3 3"
-              label={{
+              label={ev.showLabel ? {
                 value: ev.label,
                 position: 'top',
+                angle: -90,
                 fontSize: 8,
                 fontFamily: 'JetBrains Mono',
                 fill: ev.type === 'hike' ? '#ef4444' : '#10b981',
-              }}
+                offset: 6,
+              } : null}
             />
           ))}
           {SERIES_ORDER.map(sid => (
