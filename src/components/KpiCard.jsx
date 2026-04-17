@@ -1,4 +1,33 @@
+import { useEffect, useRef, useState } from 'react'
 import styles from './KpiCard.module.css'
+
+function useCountUp(target, duration = 400) {
+  const [display, setDisplay] = useState(target)
+  const prev = useRef(target)
+
+  useEffect(() => {
+    if (target === null || target === undefined) { setDisplay(target); return }
+    const from = prev.current ?? target
+    prev.current = target
+    if (from === target) return
+
+    const start = performance.now()
+    let raf
+
+    const tick = (now) => {
+      const elapsed = now - start
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setDisplay(from + (target - from) * eased)
+      if (progress < 1) raf = requestAnimationFrame(tick)
+    }
+
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [target, duration])
+
+  return display
+}
 
 function Sparkline({ color, data }) {
   const min = Math.min(...data)
@@ -24,9 +53,10 @@ function Sparkline({ color, data }) {
 }
 
 export default function KpiCard({ label, icon, value, prevValue, unit, date, color, sparkData }) {
-  const delta = value !== null && prevValue !== null ? value - prevValue : null
-  const pct   = prevValue ? ((delta / Math.abs(prevValue)) * 100) : null
-  const up     = delta >= 0
+  const animated = useCountUp(value)
+  const delta    = value !== null && prevValue !== null ? value - prevValue : null
+  const pct      = prevValue ? ((delta / Math.abs(prevValue)) * 100) : null
+  const up       = delta >= 0
   const noChange = delta === 0
 
   return (
@@ -41,7 +71,7 @@ export default function KpiCard({ label, icon, value, prevValue, unit, date, col
 
       <div className={styles.valueRow}>
         <span className={styles.value}>
-          {value !== null ? value.toFixed(2) : '—'}
+          {animated !== null ? animated.toFixed(2) : '—'}
           <span className={styles.unit}>{unit}</span>
         </span>
         {delta !== null && !noChange && (
