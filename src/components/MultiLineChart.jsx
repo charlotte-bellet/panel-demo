@@ -4,27 +4,9 @@ import {
 } from 'recharts'
 import styles from './MultiLineChart.module.css'
 
+const LEFT_AXIS  = ['FEDFUNDS', 'UNRATE']   // %
+const RIGHT_AXIS = ['CPIAUCSL']              // index pts
 const SERIES_ORDER = ['FEDFUNDS', 'CPIAUCSL', 'UNRATE']
-
-// Normalise all series to 0-100 scale for visual overlay
-function normalise(data, keys) {
-  const stats = {}
-  keys.forEach(k => {
-    const vals = data.map(d => d[k]).filter(v => v !== null && v !== undefined)
-    stats[k] = { min: Math.min(...vals), max: Math.max(...vals) }
-  })
-  return data.map(d => {
-    const point = { date: d.date }
-    keys.forEach(k => {
-      const { min, max } = stats[k]
-      point[k] = d[k] !== null && d[k] !== undefined
-        ? ((d[k] - min) / (max - min)) * 100
-        : null
-      point[`${k}_raw`] = d[k]
-    })
-    return point
-  })
-}
 
 function CustomTooltip({ active, payload, label, seriesMeta }) {
   if (!active || !payload?.length) return null
@@ -32,15 +14,16 @@ function CustomTooltip({ active, payload, label, seriesMeta }) {
     <div className={styles.tooltip}>
       <div className={styles.tooltipDate}>{label}</div>
       {payload.map(p => {
-        if (!p.dataKey || p.dataKey.endsWith('_raw')) return null
+        if (!p.dataKey) return null
         const meta = seriesMeta[p.dataKey]
-        const raw  = p.payload[`${p.dataKey}_raw`]
+        if (!meta) return null
+        const val = p.value
         return (
           <div key={p.dataKey} className={styles.tooltipRow}>
             <span className={styles.tooltipDot} style={{ background: p.color }} />
             <span className={styles.tooltipLabel}>{meta.label}</span>
             <span className={styles.tooltipVal}>
-              {raw !== null && raw !== undefined ? raw.toFixed(2) : '—'}
+              {val !== null && val !== undefined ? val.toFixed(2) : '—'}
               {meta.unit}
             </span>
           </div>
@@ -60,7 +43,10 @@ function CustomLegend({ seriesMeta }) {
           <span className={styles.legendUnit}>{seriesMeta[sid].unit.trim()}</span>
         </div>
       ))}
-      <span className={styles.legendNote}>Normalised 0–100 for comparison</span>
+      <span className={styles.legendAxis}>
+        <span className={styles.axisTag}>L</span> % &nbsp;
+        <span className={styles.axisTag}>R</span> index pts
+      </span>
     </div>
   )
 }
@@ -71,10 +57,7 @@ function tickFormatter(dateStr) {
 }
 
 export default function MultiLineChart({ data, seriesMeta }) {
-  const normalised = normalise(data, SERIES_ORDER)
-
-  // Show every 6th date label
-  const xTicks = normalised
+  const xTicks = data
     .filter((_, i) => i % 6 === 0)
     .map(d => d.date)
 
@@ -83,13 +66,13 @@ export default function MultiLineChart({ data, seriesMeta }) {
       <div className={styles.header}>
         <div>
           <h2 className={styles.title}>Macro Indicators</h2>
-          <p className={styles.subtitle}>5-year monthly trend — normalised overlay</p>
+          <p className={styles.subtitle}>5-year monthly trend — dual axis</p>
         </div>
         <CustomLegend seriesMeta={seriesMeta} />
       </div>
 
       <ResponsiveContainer width="100%" height={320}>
-        <LineChart data={normalised} margin={{ top: 8, right: 24, bottom: 0, left: -8 }}>
+        <LineChart data={data} margin={{ top: 8, right: 48, bottom: 0, left: -8 }}>
           <CartesianGrid
             strokeDasharray="3 3"
             stroke="rgba(255,255,255,0.04)"
@@ -104,20 +87,31 @@ export default function MultiLineChart({ data, seriesMeta }) {
             tickLine={false}
           />
           <YAxis
-            domain={[0, 100]}
+            yAxisId="left"
             tick={{ fill: '#505868', fontSize: 11 }}
             axisLine={false}
             tickLine={false}
-            tickFormatter={v => `${v}`}
+            tickFormatter={v => `${v}%`}
+            width={38}
+          />
+          <YAxis
+            yAxisId="right"
+            orientation="right"
+            tick={{ fill: '#505868', fontSize: 11 }}
+            axisLine={false}
+            tickLine={false}
+            tickFormatter={v => v}
+            width={42}
           />
           <Tooltip
             content={<CustomTooltip seriesMeta={seriesMeta} />}
             cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 1 }}
           />
-          <ReferenceLine y={50} stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
+          <ReferenceLine yAxisId="left" y={0} stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
           {SERIES_ORDER.map(sid => (
             <Line
               key={sid}
+              yAxisId={LEFT_AXIS.includes(sid) ? 'left' : 'right'}
               type="monotone"
               dataKey={sid}
               stroke={seriesMeta[sid].color}

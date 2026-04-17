@@ -55,13 +55,27 @@
   font-family: var(--font-mono);
 }
 
-.legendNote {
+.legendAxis {
   font-size: 10px;
   color: var(--text-muted);
-  padding: 2px 7px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.axisTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 4px;
-  letter-spacing: 0.02em;
+  border-radius: 3px;
+  color: var(--text-muted);
 }
 
 /* Tooltip */
