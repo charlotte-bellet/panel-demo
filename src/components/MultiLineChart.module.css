@@ -82,7 +82,7 @@
 .regimeLegend {
   display: flex;
   gap: 14px;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   flex-wrap: wrap;
 }
 
@@ -101,6 +101,29 @@
   width: 10px;
   height: 10px;
   border-radius: 2px;
+}
+
+/* FOMC legend */
+.fomcLegend {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.fomcItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.fomcDash {
+  display: block;
+  width: 16px;
+  height: 1px;
+  opacity: 0.7;
 }
 
 /* Tooltip */

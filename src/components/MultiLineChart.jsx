@@ -4,8 +4,7 @@ import {
 } from 'recharts'
 import styles from './MultiLineChart.module.css'
 
-const LEFT_AXIS  = ['FEDFUNDS', 'UNRATE']   // %
-const RIGHT_AXIS = ['CPIAUCSL']              // index pts
+const LEFT_AXIS    = ['FEDFUNDS', 'UNRATE']
 const SERIES_ORDER = ['FEDFUNDS', 'CPIAUCSL', 'UNRATE']
 
 const REGIMES = {
@@ -43,6 +42,23 @@ function detectRegimes(data) {
   areas.push({ start, end: fedfunds[fedfunds.length - 1].date, regime: current })
   return areas
 }
+
+const FOMC_EVENTS = [
+  { date: '2022-03-01', label: '+25bp', type: 'hike' },
+  { date: '2022-05-01', label: '+50bp', type: 'hike' },
+  { date: '2022-06-01', label: '+75bp', type: 'hike' },
+  { date: '2022-07-01', label: '+75bp', type: 'hike' },
+  { date: '2022-09-01', label: '+75bp', type: 'hike' },
+  { date: '2022-11-01', label: '+75bp', type: 'hike' },
+  { date: '2022-12-01', label: '+50bp', type: 'hike' },
+  { date: '2023-02-01', label: '+25bp', type: 'hike' },
+  { date: '2023-03-01', label: '+25bp', type: 'hike' },
+  { date: '2023-05-01', label: '+25bp', type: 'hike' },
+  { date: '2023-07-01', label: '+25bp', type: 'hike' },
+  { date: '2024-09-01', label: '−50bp', type: 'cut' },
+  { date: '2024-11-01', label: '−25bp', type: 'cut' },
+  { date: '2024-12-01', label: '−25bp', type: 'cut' },
+]
 
 function CustomTooltip({ active, payload, label, seriesMeta }) {
   if (!active || !payload?.length) return null
@@ -116,6 +132,17 @@ export default function MultiLineChart({ data, seriesMeta }) {
         ))}
       </div>
 
+      <div className={styles.fomcLegend}>
+        <span className={styles.fomcItem}>
+          <span className={styles.fomcDash} style={{ background: '#ef4444' }} />
+          Fed hike
+        </span>
+        <span className={styles.fomcItem}>
+          <span className={styles.fomcDash} style={{ background: '#10b981' }} />
+          Fed cut
+        </span>
+      </div>
+
       <ResponsiveContainer width="100%" height={320}>
         <LineChart data={data} margin={{ top: 8, right: 48, bottom: 0, left: -8 }}>
           <CartesianGrid
@@ -163,6 +190,23 @@ export default function MultiLineChart({ data, seriesMeta }) {
             />
           ))}
           <ReferenceLine yAxisId="left" y={0} stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
+          {FOMC_EVENTS.map(ev => (
+            <ReferenceLine
+              key={ev.date}
+              yAxisId="left"
+              x={ev.date}
+              stroke={ev.type === 'hike' ? 'rgba(239,68,68,0.35)' : 'rgba(16,185,129,0.35)'}
+              strokeWidth={1}
+              strokeDasharray="3 3"
+              label={{
+                value: ev.label,
+                position: 'top',
+                fontSize: 8,
+                fontFamily: 'JetBrains Mono',
+                fill: ev.type === 'hike' ? '#ef4444' : '#10b981',
+              }}
+            />
+          ))}
           {SERIES_ORDER.map(sid => (
             <Line
               key={sid}
