@@ -5,10 +5,10 @@
       "CPIAUCSL": "CPI All Urban Consumers (Index 1982-84=100)",
       "UNRATE": "Unemployment Rate (%)"
     },
-    "start_date": "2021-04-17",
-    "end_date": "2026-04-16",
+    "start_date": "2021-04-18",
+    "end_date": "2026-04-17",
     "rolling_window_months": 12,
-    "generated_at": "2026-04-16"
+    "generated_at": "2026-04-17"
   },
   "series": {
     "FEDFUNDS": {
