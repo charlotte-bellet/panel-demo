@@ -131,6 +131,13 @@ export default function App() {
       .finally(() => setLoading(false))
   }, [refreshKey])
 
+  const timeSeries = data?.timeSeries ?? []
+  const betas      = useMemo(() => computeBetas(timeSeries), [timeSeries])
+  const projection = useMemo(
+    () => buildProjection(timeSeries, whatIfDelta, betas.betaCPI, betas.betaUNRATE),
+    [timeSeries, whatIfDelta, betas]
+  )
+
   if (error) return (
     <div className={styles.errorState}>
       <span className={styles.errorIcon}>⚠</span>
@@ -146,12 +153,7 @@ export default function App() {
     </div>
   )
 
-  const { timeSeries, kpis, matrix, metadata, rollingCorr } = data
-  const betas      = useMemo(() => computeBetas(timeSeries), [timeSeries])
-  const projection = useMemo(
-    () => buildProjection(timeSeries, whatIfDelta, betas.betaCPI, betas.betaUNRATE),
-    [timeSeries, whatIfDelta, betas]
-  )
+  const { kpis, matrix, metadata, rollingCorr } = data
 
   return (
     <div className={styles.layout}>
