@@ -1,0 +1,108 @@
+.wrapper {
+  padding: 22px 22px 18px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 3px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.legendLine {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.legendLabel {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.legendUnit {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.legendNote {
+  font-size: 10px;
+  color: var(--text-muted);
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+/* Tooltip */
+.tooltip {
+  background: #1a1e2b;
+  border: 1px solid var(--border-hi);
+  border-radius: 8px;
+  padding: 10px 14px;
+  min-width: 180px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.tooltipDate {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+
+.tooltipDot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tooltipLabel {
+  font-size: 12px;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.tooltipVal {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
