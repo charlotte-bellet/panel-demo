@@ -35,6 +35,7 @@ function parseData(raw) {
       value: last?.[1] ?? null,
       prevValue: prev?.[1] ?? null,
       date: last?.[0] ?? '',
+      sparkData: entries.slice(-12).map(([, v]) => v),
     }
   })
 
@@ -162,6 +163,7 @@ export default function App() {
               unit={meta.unit}
               date={kpis[sid].date}
               color={meta.color}
+              sparkData={kpis[sid].sparkData}
             />
           ))}
         </section>

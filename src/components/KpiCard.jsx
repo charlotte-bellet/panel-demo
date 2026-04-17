@@ -1,18 +1,19 @@
 import styles from './KpiCard.module.css'
 
-function Sparkline({ color }) {
-  // Decorative SVG bar spark
-  const bars = [40, 55, 48, 70, 62, 80, 75, 90, 85, 95]
-  const max = Math.max(...bars)
+function Sparkline({ color, data }) {
+  const min = Math.min(...data)
+  const max = Math.max(...data)
+  const range = max - min || 1
+  const bars = data.map(v => ((v - min) / range) * 100)
   return (
     <svg width="64" height="28" viewBox="0 0 64 28" fill="none" aria-hidden>
       {bars.map((h, i) => (
         <rect
           key={i}
           x={i * 7}
-          y={28 - (h / max) * 28}
+          y={28 - (h / 100) * 28}
           width={5}
-          height={(h / max) * 28}
+          height={(h / 100) * 28}
           rx={1.5}
           fill={color}
           opacity={0.15 + (i / bars.length) * 0.55}
@@ -22,7 +23,7 @@ function Sparkline({ color }) {
   )
 }
 
-export default function KpiCard({ label, icon, value, prevValue, unit, date, color }) {
+export default function KpiCard({ label, icon, value, prevValue, unit, date, color, sparkData }) {
   const delta = value !== null && prevValue !== null ? value - prevValue : null
   const pct   = prevValue ? ((delta / Math.abs(prevValue)) * 100) : null
   const up     = delta >= 0
@@ -35,7 +36,7 @@ export default function KpiCard({ label, icon, value, prevValue, unit, date, col
           <span className={styles.icon}>{icon}</span>
           <span className={styles.label}>{label}</span>
         </div>
-        <Sparkline color={color} />
+        <Sparkline color={color} data={sparkData} />
       </div>
 
       <div className={styles.valueRow}>
