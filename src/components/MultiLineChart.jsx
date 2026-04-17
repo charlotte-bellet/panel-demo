@@ -149,8 +149,12 @@ function tickFormatter(dateStr) {
   return d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
 }
 
-export default function MultiLineChart({ data, seriesMeta }) {
-  const xTicks  = data.filter((_, i) => i % 6 === 0).map(d => d.date)
+export default function MultiLineChart({ data, seriesMeta, projection = [] }) {
+  const chartData = useMemo(() => (
+    projection.length ? [...data, ...projection] : data
+  ), [data, projection])
+
+  const xTicks  = chartData.filter((_, i) => i % 6 === 0).map(d => d.date)
   const regimes = detectRegimes(data)
   const activeRegimes = [...new Set(regimes.map(r => r.regime))]
 
@@ -195,7 +199,7 @@ export default function MultiLineChart({ data, seriesMeta }) {
       </div>
 
       <ResponsiveContainer width="100%" height={320}>
-        <LineChart data={data} margin={{ top: 8, right: 48, bottom: 0, left: -8 }}>
+        <LineChart data={chartData} margin={{ top: 8, right: 48, bottom: 0, left: -8 }}>
           <CartesianGrid
             strokeDasharray="3 3"
             stroke="rgba(255,255,255,0.04)"
@@ -271,6 +275,34 @@ export default function MultiLineChart({ data, seriesMeta }) {
               connectNulls
             />
           ))}
+          {projection.length > 0 && (
+            <>
+              <Line
+                key="CPIAUCSL_proj"
+                yAxisId="right"
+                type="monotone"
+                dataKey="CPIAUCSL_proj"
+                stroke="rgba(168,85,247,0.55)"
+                strokeWidth={1.5}
+                strokeDasharray="5 4"
+                dot={false}
+                activeDot={{ r: 3, strokeWidth: 0 }}
+                connectNulls
+              />
+              <Line
+                key="UNRATE_proj"
+                yAxisId="left"
+                type="monotone"
+                dataKey="UNRATE_proj"
+                stroke="rgba(6,182,212,0.55)"
+                strokeWidth={1.5}
+                strokeDasharray="5 4"
+                dot={false}
+                activeDot={{ r: 3, strokeWidth: 0 }}
+                connectNulls
+              />
+            </>
+          )}
         </LineChart>
       </ResponsiveContainer>
     </div>
