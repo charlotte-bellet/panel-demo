@@ -80,6 +80,28 @@
   animation: spin 0.8s linear infinite;
 }
 
+.whatIfBtn {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.whatIfBtn:hover { color: var(--accent-amber); border-color: var(--accent-amber); }
+.whatIfActive {
+  color: var(--accent-amber);
+  border-color: var(--accent-amber);
+  background: rgba(245,158,11,0.08);
+}
+
 .themeBtn {
   display: flex;
   align-items: center;

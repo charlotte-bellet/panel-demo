@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import KpiCard from './components/KpiCard'
 import MultiLineChart from './components/MultiLineChart'
 import CorrelationHeatmap from './components/CorrelationHeatmap'
+import WhatIfPanel from './components/WhatIfPanel'
 import styles from './App.module.css'
 
 const SERIES_META = {
@@ -60,6 +61,41 @@ function parseData(raw) {
   return { timeSeries, kpis, matrix, rollingCorr, metadata: raw.metadata }
 }
 
+function computeBetas(timeSeries) {
+  const pts = timeSeries.filter(d => d.FEDFUNDS !== null && d.CPIAUCSL !== null && d.UNRATE !== null)
+  if (pts.length < 4) return { betaCPI: 0, betaUNRATE: 0 }
+
+  const dFed = pts.slice(1).map((d, i) => d.FEDFUNDS - pts[i].FEDFUNDS)
+  const dCPI = pts.slice(1).map((d, i) => d.CPIAUCSL - pts[i].CPIAUCSL)
+  const dUNR = pts.slice(1).map((d, i) => d.UNRATE   - pts[i].UNRATE)
+
+  const n       = dFed.length
+  const meanFed = dFed.reduce((a, b) => a + b, 0) / n
+  const varFed  = dFed.reduce((a, v) => a + (v - meanFed) ** 2, 0) / n
+
+  if (varFed === 0) return { betaCPI: 0, betaUNRATE: 0 }
+
+  const betaCPI    = dFed.reduce((a, v, i) => a + (v - meanFed) * dCPI[i], 0) / (n * varFed)
+  const betaUNRATE = dFed.reduce((a, v, i) => a + (v - meanFed) * dUNR[i], 0) / (n * varFed)
+  return { betaCPI, betaUNRATE }
+}
+
+function buildProjection(timeSeries, delta, betaCPI, betaUNRATE) {
+  if (delta === 0) return []
+  const last = timeSeries.filter(d => d.CPIAUCSL !== null && d.UNRATE !== null).slice(-1)[0]
+  if (!last) return []
+  const [y, m] = last.date.split('-').map(Number)
+  return Array.from({ length: 6 }, (_, t) => {
+    let mo = m + t + 1, yr = y
+    while (mo > 12) { mo -= 12; yr++ }
+    return {
+      date: `${yr}-${String(mo).padStart(2, '0')}-01`,
+      CPIAUCSL_proj: last.CPIAUCSL + (delta / 100) * betaCPI * (t + 1),
+      UNRATE_proj:   last.UNRATE   + (delta / 100) * betaUNRATE * (t + 1),
+    }
+  })
+}
+
 function formatAge(ts) {
   const mins = Math.floor((Date.now() - ts) / 60000)
   if (mins < 1) return 'just now'
@@ -74,6 +110,8 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') ?? 'dark')
+  const [showWhatIf, setShowWhatIf] = useState(false)
+  const [whatIfDelta, setWhatIfDelta] = useState(0)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -109,6 +147,11 @@ export default function App() {
   )
 
   const { timeSeries, kpis, matrix, metadata, rollingCorr } = data
+  const betas      = useMemo(() => computeBetas(timeSeries), [timeSeries])
+  const projection = useMemo(
+    () => buildProjection(timeSeries, whatIfDelta, betas.betaCPI, betas.betaUNRATE),
+    [timeSeries, whatIfDelta, betas]
+  )
 
   return (
     <div className={styles.layout}>
@@ -149,6 +192,13 @@ export default function App() {
               <path d="M21 3v5h-5" />
             </svg>
             {loading ? 'Refreshing…' : 'Refresh'}
+          </button>
+          <button
+            className={`${styles.whatIfBtn} ${showWhatIf ? styles.whatIfActive : ''}`}
+            onClick={() => setShowWhatIf(v => !v)}
+            title="What-if simulator"
+          >
+            What-if
           </button>
           <button
             className={styles.themeBtn}
@@ -193,12 +243,25 @@ export default function App() {
         {/* Charts row */}
         <section className={styles.chartsRow}>
           <div className={styles.chartPrimary}>
-            <MultiLineChart data={timeSeries} seriesMeta={SERIES_META} />
+            <MultiLineChart data={timeSeries} seriesMeta={SERIES_META} projection={projection} />
           </div>
           <div className={styles.chartSecondary}>
             <CorrelationHeatmap matrix={matrix} seriesMeta={SERIES_META} rollingCorr={rollingCorr} />
           </div>
         </section>
+
+        {/* What-if panel */}
+        {showWhatIf && (
+          <WhatIfPanel
+            delta={whatIfDelta}
+            setDelta={setWhatIfDelta}
+            betaCPI={betas.betaCPI}
+            betaUNRATE={betas.betaUNRATE}
+            latestCPI={kpis.CPIAUCSL.value}
+            latestUNRATE={kpis.UNRATE.value}
+            latestFed={kpis.FEDFUNDS.value}
+          />
+        )}
 
         {/* Footer */}
         <footer className={styles.footer}>
