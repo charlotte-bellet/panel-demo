@@ -2,20 +2,14 @@ import styles from './CorrelationHeatmap.module.css'
 
 const SERIES_IDS = ['FEDFUNDS', 'CPIAUCSL', 'UNRATE']
 
-// Map correlation -1…1 to a dark-theme colour
+// Map correlation -1…1 to a colour — works on both dark and light themes
 function corrToColor(val) {
-  if (val === null) return 'rgba(255,255,255,0.03)'
-  if (val === 1)    return 'rgba(59,130,246,0.18)'  // diagonal
+  if (val === null) return 'color-mix(in srgb, var(--text-primary) 3%, transparent)'
+  if (val === 1)    return 'color-mix(in srgb, var(--accent-blue) 18%, transparent)'
   const abs = Math.abs(val)
-  if (val > 0) {
-    // positive: blue shades
-    const a = 0.1 + abs * 0.55
-    return `rgba(59,130,246,${a.toFixed(2)})`
-  } else {
-    // negative: red shades
-    const a = 0.1 + abs * 0.55
-    return `rgba(239,68,68,${a.toFixed(2)})`
-  }
+  const pct = Math.round((0.1 + abs * 0.55) * 100)
+  if (val > 0) return `color-mix(in srgb, var(--accent-blue) ${pct}%, transparent)`
+  return `color-mix(in srgb, var(--accent-red) ${pct}%, transparent)`
 }
 
 function corrToText(val) {
