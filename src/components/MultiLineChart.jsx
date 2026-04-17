@@ -1,12 +1,48 @@
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, Legend, ResponsiveContainer, ReferenceLine
+  Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceArea
 } from 'recharts'
 import styles from './MultiLineChart.module.css'
 
 const LEFT_AXIS  = ['FEDFUNDS', 'UNRATE']   // %
 const RIGHT_AXIS = ['CPIAUCSL']              // index pts
 const SERIES_ORDER = ['FEDFUNDS', 'CPIAUCSL', 'UNRATE']
+
+const REGIMES = {
+  'Low Rate':   { color: 'rgba(59,130,246,0.06)',  label: 'Low Rate'   },
+  'Tightening': { color: 'rgba(239,68,68,0.07)',   label: 'Tightening' },
+  'Plateau':    { color: 'rgba(245,158,11,0.06)',  label: 'Plateau'    },
+  'Easing':     { color: 'rgba(16,185,129,0.07)',  label: 'Easing'     },
+}
+
+function detectRegimes(data) {
+  const fedfunds = data.map(d => ({ date: d.date, v: d.FEDFUNDS })).filter(d => d.v !== null)
+  if (fedfunds.length < 4) return []
+
+  const getRegime = (i) => {
+    const v = fedfunds[i].v
+    if (v < 1) return 'Low Rate'
+    const slope = i >= 3 ? (fedfunds[i].v - fedfunds[i - 3].v) / 3 : 0
+    if (slope > 0.2)  return 'Tightening'
+    if (slope < -0.1) return 'Easing'
+    return 'Plateau'
+  }
+
+  const areas = []
+  let current = getRegime(0)
+  let start = fedfunds[0].date
+
+  for (let i = 1; i < fedfunds.length; i++) {
+    const r = getRegime(i)
+    if (r !== current) {
+      areas.push({ start, end: fedfunds[i].date, regime: current })
+      current = r
+      start = fedfunds[i].date
+    }
+  }
+  areas.push({ start, end: fedfunds[fedfunds.length - 1].date, regime: current })
+  return areas
+}
 
 function CustomTooltip({ active, payload, label, seriesMeta }) {
   if (!active || !payload?.length) return null
@@ -57,9 +93,9 @@ function tickFormatter(dateStr) {
 }
 
 export default function MultiLineChart({ data, seriesMeta }) {
-  const xTicks = data
-    .filter((_, i) => i % 6 === 0)
-    .map(d => d.date)
+  const xTicks  = data.filter((_, i) => i % 6 === 0).map(d => d.date)
+  const regimes = detectRegimes(data)
+  const activeRegimes = [...new Set(regimes.map(r => r.regime))]
 
   return (
     <div className={styles.wrapper}>
@@ -69,6 +105,15 @@ export default function MultiLineChart({ data, seriesMeta }) {
           <p className={styles.subtitle}>5-year monthly trend — dual axis</p>
         </div>
         <CustomLegend seriesMeta={seriesMeta} />
+      </div>
+
+      <div className={styles.regimeLegend}>
+        {activeRegimes.map(r => (
+          <span key={r} className={styles.regimeItem}>
+            <span className={styles.regimeSwatch} style={{ background: REGIMES[r].color.replace(/[\d.]+\)$/, '0.5)') }} />
+            {REGIMES[r].label}
+          </span>
+        ))}
       </div>
 
       <ResponsiveContainer width="100%" height={320}>
@@ -107,6 +152,16 @@ export default function MultiLineChart({ data, seriesMeta }) {
             content={<CustomTooltip seriesMeta={seriesMeta} />}
             cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 1 }}
           />
+          {regimes.map((r, i) => (
+            <ReferenceArea
+              key={i}
+              yAxisId="left"
+              x1={r.start}
+              x2={r.end}
+              fill={REGIMES[r.regime].color}
+              strokeOpacity={0}
+            />
+          ))}
           <ReferenceLine yAxisId="left" y={0} stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
           {SERIES_ORDER.map(sid => (
             <Line
