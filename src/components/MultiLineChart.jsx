@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceArea
@@ -60,7 +61,41 @@ const FOMC_EVENTS = [
   { date: '2024-12-01', label: '−25bp', type: 'cut' },
 ]
 
-function CustomTooltip({ active, payload, label, seriesMeta }) {
+// ── Anomaly detection ─────────────────────────────────────────────────────────
+function detectAnomalies(data, sid, windowSize = 12) {
+  const result = new Map() // date -> z-score
+  for (let i = windowSize; i < data.length; i++) {
+    const vals = data.slice(i - windowSize, i)
+      .map(d => d[sid])
+      .filter(v => v !== null)
+    if (vals.length < 3) continue
+
+    const mean  = vals.reduce((a, b) => a + b, 0) / vals.length
+    const sigma = Math.sqrt(vals.reduce((a, v) => a + (v - mean) ** 2, 0) / vals.length)
+
+    const val = data[i][sid]
+    if (val !== null && sigma > 0 && Math.abs(val - mean) > 2 * sigma) {
+      result.set(data[i].date, (val - mean) / sigma)
+    }
+  }
+  return result
+}
+
+function makeAnomalyDot(anomalyMap, color) {
+  return function AnomalyDot({ cx, cy, payload }) {
+    if (!payload?.date || !anomalyMap.has(payload.date)) return null
+    return (
+      <g>
+        <circle cx={cx} cy={cy} r={9}   fill={color} opacity={0.08} />
+        <circle cx={cx} cy={cy} r={5.5} fill={color} opacity={0.18} />
+        <circle cx={cx} cy={cy} r={3}   fill={color} opacity={0.85} />
+      </g>
+    )
+  }
+}
+
+// ── Tooltip ───────────────────────────────────────────────────────────────────
+function CustomTooltip({ active, payload, label, seriesMeta, anomalyMaps }) {
   if (!active || !payload?.length) return null
   return (
     <div className={styles.tooltip}>
@@ -70,6 +105,7 @@ function CustomTooltip({ active, payload, label, seriesMeta }) {
         const meta = seriesMeta[p.dataKey]
         if (!meta) return null
         const val = p.value
+        const z   = anomalyMaps?.[p.dataKey]?.get(label)
         return (
           <div key={p.dataKey} className={styles.tooltipRow}>
             <span className={styles.tooltipDot} style={{ background: p.color }} />
@@ -78,6 +114,11 @@ function CustomTooltip({ active, payload, label, seriesMeta }) {
               {val !== null && val !== undefined ? val.toFixed(2) : '—'}
               {meta.unit}
             </span>
+            {z !== undefined && (
+              <span className={styles.anomalyBadge}>
+                ⚠ {z > 0 ? '+' : ''}{z.toFixed(1)}σ
+              </span>
+            )}
           </div>
         )
       })}
@@ -113,6 +154,12 @@ export default function MultiLineChart({ data, seriesMeta }) {
   const regimes = detectRegimes(data)
   const activeRegimes = [...new Set(regimes.map(r => r.regime))]
 
+  const anomalyMaps = useMemo(() => {
+    const maps = {}
+    SERIES_ORDER.forEach(sid => { maps[sid] = detectAnomalies(data, sid) })
+    return maps
+  }, [data])
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -140,6 +187,10 @@ export default function MultiLineChart({ data, seriesMeta }) {
         <span className={styles.fomcItem}>
           <span className={styles.fomcDash} style={{ background: '#10b981' }} />
           Fed cut
+        </span>
+        <span className={styles.fomcItem}>
+          <span className={styles.anomalyDotLegend} />
+          Anomaly ±2σ
         </span>
       </div>
 
@@ -176,7 +227,7 @@ export default function MultiLineChart({ data, seriesMeta }) {
             width={42}
           />
           <Tooltip
-            content={<CustomTooltip seriesMeta={seriesMeta} />}
+            content={<CustomTooltip seriesMeta={seriesMeta} anomalyMaps={anomalyMaps} />}
             cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 1 }}
           />
           {regimes.map((r, i) => (
@@ -215,7 +266,7 @@ export default function MultiLineChart({ data, seriesMeta }) {
               dataKey={sid}
               stroke={seriesMeta[sid].color}
               strokeWidth={1.8}
-              dot={false}
+              dot={makeAnomalyDot(anomalyMaps[sid], seriesMeta[sid].color)}
               activeDot={{ r: 4, strokeWidth: 0 }}
               connectNulls
             />
