@@ -1,0 +1,41 @@
+name: Refresh macro data
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'   # 1st of every month at 06:00 UTC
+  workflow_dispatch:        # manual trigger from GitHub Actions UI
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pandas requests
+
+      - name: Run FRED pipeline
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: python fred_pipeline.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet data/macro_data.json; then
+            echo "No changes to data/macro_data.json — skipping commit."
+          else
+            git add data/macro_data.json
+            git commit -m "chore(data): refresh macro data [$(date +%Y-%m-%d)]"
+            git push
+          fi

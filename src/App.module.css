@@ -54,6 +54,32 @@
   font-family: var(--font-mono);
 }
 
+.refreshBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.refreshBtn:hover:not(:disabled) {
+  color: var(--accent-blue);
+  border-color: var(--accent-blue);
+}
+.refreshBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.spinning {
+  animation: spin 0.8s linear infinite;
+}
+
 .liveTag {
   display: flex;
   align-items: center;

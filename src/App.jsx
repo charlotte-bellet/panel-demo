@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import KpiCard from './components/KpiCard'
 import MultiLineChart from './components/MultiLineChart'
 import CorrelationHeatmap from './components/CorrelationHeatmap'
@@ -59,16 +59,31 @@ function parseData(raw) {
   return { timeSeries, kpis, matrix, rollingCorr, metadata: raw.metadata }
 }
 
+function formatAge(ts) {
+  const mins = Math.floor((Date.now() - ts) / 60000)
+  if (mins < 1) return 'just now'
+  if (mins === 1) return '1 min ago'
+  return `${mins} mins ago`
+}
+
 export default function App() {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
+  const [refreshKey, setRefreshKey] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [lastUpdated, setLastUpdated] = useState(null)
+
+  const refresh = useCallback(() => setRefreshKey(k => k + 1), [])
 
   useEffect(() => {
-    fetch('/data/macro_data.json')
+    setLoading(true)
+    setError(null)
+    fetch(`/data/macro_data.json?_=${refreshKey}`)
       .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json() })
-      .then(raw => setData(parseData(raw)))
+      .then(raw => { setData(parseData(raw)); setLastUpdated(Date.now()) })
       .catch(e => setError(e.message))
-  }, [])
+      .finally(() => setLoading(false))
+  }, [refreshKey])
 
   if (error) return (
     <div className={styles.errorState}>
@@ -78,7 +93,7 @@ export default function App() {
     </div>
   )
 
-  if (!data) return (
+  if (!data && !error) return (
     <div className={styles.loadingState}>
       <div className={styles.spinner} />
       <p>Loading macro data…</p>
@@ -105,6 +120,28 @@ export default function App() {
           <span className={styles.headerMeta}>
             {metadata.rolling_window_months}M rolling window
           </span>
+          {lastUpdated && (
+            <span className={styles.headerMeta}>
+              Updated {formatAge(lastUpdated)}
+            </span>
+          )}
+          <button
+            className={styles.refreshBtn}
+            onClick={refresh}
+            disabled={loading}
+            title="Refresh data"
+          >
+            <svg
+              className={loading ? styles.spinning : ''}
+              width="14" height="14" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" strokeWidth="2.5"
+              strokeLinecap="round" strokeLinejoin="round"
+            >
+              <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+              <path d="M21 3v5h-5" />
+            </svg>
+            {loading ? 'Refreshing…' : 'Refresh'}
+          </button>
           <div className={styles.liveTag}>
             <span className={styles.liveDot} />
             LIVE
