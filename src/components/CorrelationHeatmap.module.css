@@ -66,7 +66,7 @@
   padding: 10px 4px;
   border: 1px solid rgba(255,255,255,0.04);
   transition: filter 0.15s;
-  min-height: 58px;
+  min-height: 76px;
   cursor: default;
 }
 
@@ -81,6 +81,19 @@
   font-weight: 700;
   font-family: var(--font-mono);
   color: var(--text-primary);
+  line-height: 1;
+}
+
+.sparkRow {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 5px;
+}
+
+.trendArrow {
+  font-size: 10px;
+  font-weight: 700;
   line-height: 1;
 }
 

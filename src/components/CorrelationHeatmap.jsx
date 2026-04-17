@@ -2,6 +2,43 @@ import styles from './CorrelationHeatmap.module.css'
 
 const SERIES_IDS = ['FEDFUNDS', 'CPIAUCSL', 'UNRATE']
 
+function CorrSparkline({ a, b, rollingCorr }) {
+  const key = [`${a}_vs_${b}`, `${b}_vs_${a}`].find(k => rollingCorr?.[k])
+  if (!key) return null
+
+  const entries = Object.entries(rollingCorr[key])
+    .sort(([x], [y]) => x.localeCompare(y))
+    .slice(-10)
+
+  if (entries.length < 2) return null
+
+  const vals  = entries.map(([, v]) => v)
+  const min   = Math.min(...vals)
+  const max   = Math.max(...vals)
+  const range = max - min || 0.01
+  const last  = vals[vals.length - 1]
+  const color = last >= 0 ? '#3b82f6' : '#ef4444'
+  const trend = vals[vals.length - 1] > vals[vals.length - 2] ? '↑' : '↓'
+
+  const W = 40, H = 16
+  const points = vals
+    .map((v, i) => {
+      const x = (i / (vals.length - 1)) * W
+      const y = H - ((v - min) / range) * H
+      return `${x.toFixed(1)},${y.toFixed(1)}`
+    })
+    .join(' ')
+
+  return (
+    <div className={styles.sparkRow}>
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} overflow="visible">
+        <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.8" />
+      </svg>
+      <span className={styles.trendArrow} style={{ color }}>{trend}</span>
+    </div>
+  )
+}
+
 // Map correlation -1…1 to a dark-theme colour
 function corrToColor(val) {
   if (val === null) return 'rgba(255,255,255,0.03)'
@@ -32,7 +69,7 @@ function strengthLabel(val) {
   return 'Weak'
 }
 
-export default function CorrelationHeatmap({ matrix, seriesMeta }) {
+export default function CorrelationHeatmap({ matrix, seriesMeta, rollingCorr }) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -69,7 +106,10 @@ export default function CorrelationHeatmap({ matrix, seriesMeta }) {
                 >
                   <span className={styles.cellVal}>{corrToText(val)}</span>
                   {!isDiag && val !== null && (
-                    <span className={styles.cellStrength}>{strengthLabel(val)}</span>
+                    <>
+                      <span className={styles.cellStrength}>{strengthLabel(val)}</span>
+                      <CorrSparkline a={rowId} b={colId} rollingCorr={rollingCorr} />
+                    </>
                   )}
                 </div>
               )
