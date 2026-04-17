@@ -196,7 +196,7 @@ export default function App() {
             <MultiLineChart data={timeSeries} seriesMeta={SERIES_META} />
           </div>
           <div className={styles.chartSecondary}>
-            <CorrelationHeatmap matrix={matrix} seriesMeta={SERIES_META} rollingCorr={rollingCorr} />
+            <CorrelationHeatmap matrix={matrix} seriesMeta={SERIES_META} rollingCorr={rollingCorr} timeSeries={timeSeries} />
           </div>
         </section>
 

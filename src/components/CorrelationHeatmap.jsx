@@ -1,6 +1,30 @@
+import { useState, useMemo } from 'react'
 import styles from './CorrelationHeatmap.module.css'
 
 const SERIES_IDS = ['FEDFUNDS', 'CPIAUCSL', 'UNRATE']
+
+function computePearson(timeSeries, sidA, sidB, window) {
+  const pts = timeSeries
+    .filter(d => d[sidA] !== null && d[sidB] !== null)
+    .slice(-window)
+
+  if (pts.length < 3) return null
+
+  const n  = pts.length
+  const xs = pts.map(d => d[sidA])
+  const ys = pts.map(d => d[sidB])
+
+  const sumX  = xs.reduce((a, b) => a + b, 0)
+  const sumY  = ys.reduce((a, b) => a + b, 0)
+  const sumXY = xs.reduce((acc, x, i) => acc + x * ys[i], 0)
+  const sumX2 = xs.reduce((acc, x) => acc + x * x, 0)
+  const sumY2 = ys.reduce((acc, y) => acc + y * y, 0)
+
+  const num = n * sumXY - sumX * sumY
+  const den = Math.sqrt((n * sumX2 - sumX ** 2) * (n * sumY2 - sumY ** 2))
+
+  return den === 0 ? null : Math.max(-1, Math.min(1, num / den))
+}
 
 function CorrSparkline({ a, b, rollingCorr }) {
   const key = [`${a}_vs_${b}`, `${b}_vs_${a}`].find(k => rollingCorr?.[k])
@@ -39,17 +63,14 @@ function CorrSparkline({ a, b, rollingCorr }) {
   )
 }
 
-// Map correlation -1…1 to a dark-theme colour
 function corrToColor(val) {
   if (val === null) return 'rgba(255,255,255,0.03)'
-  if (val === 1)    return 'rgba(59,130,246,0.18)'  // diagonal
+  if (val === 1)    return 'rgba(59,130,246,0.18)'
   const abs = Math.abs(val)
   if (val > 0) {
-    // positive: blue shades
     const a = 0.1 + abs * 0.55
     return `rgba(59,130,246,${a.toFixed(2)})`
   } else {
-    // negative: red shades
     const a = 0.1 + abs * 0.55
     return `rgba(239,68,68,${a.toFixed(2)})`
   }
@@ -69,12 +90,41 @@ function strengthLabel(val) {
   return 'Weak'
 }
 
-export default function CorrelationHeatmap({ matrix, seriesMeta, rollingCorr }) {
+export default function CorrelationHeatmap({ matrix: initialMatrix, seriesMeta, rollingCorr, timeSeries }) {
+  const [corrWindow, setCorrWindow] = useState(12)
+
+  const matrix = useMemo(() => {
+    if (!timeSeries) return initialMatrix
+    const m = {}
+    SERIES_IDS.forEach(a => {
+      m[a] = {}
+      SERIES_IDS.forEach(b => {
+        m[a][b] = a === b ? 1 : computePearson(timeSeries, a, b, corrWindow)
+      })
+    })
+    return m
+  }, [timeSeries, corrWindow, initialMatrix])
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Correlation Matrix</h2>
-        <p className={styles.subtitle}>12-month rolling · latest reading</p>
+        <div>
+          <h2 className={styles.title}>Correlation Matrix</h2>
+          <p className={styles.subtitle}>{corrWindow}-month rolling · latest reading</p>
+        </div>
+        <div className={styles.sliderRow}>
+          <span className={styles.sliderLabel}>Window</span>
+          <input
+            type="range"
+            min={3}
+            max={60}
+            step={1}
+            value={corrWindow}
+            onChange={e => setCorrWindow(Number(e.target.value))}
+            className={styles.sliderInput}
+          />
+          <span className={styles.sliderValue}>{corrWindow}M</span>
+        </div>
       </div>
 
       <div className={styles.grid}>
