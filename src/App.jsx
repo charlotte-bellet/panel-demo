@@ -101,7 +101,7 @@ export default function App() {
     </div>
   )
 
-  const { timeSeries, kpis, matrix, metadata } = data
+  const { timeSeries, kpis, matrix, metadata, rollingCorr } = data
 
   return (
     <div className={styles.layout}>
@@ -174,7 +174,7 @@ export default function App() {
             <MultiLineChart data={timeSeries} seriesMeta={SERIES_META} />
           </div>
           <div className={styles.chartSecondary}>
-            <CorrelationHeatmap matrix={matrix} seriesMeta={SERIES_META} />
+            <CorrelationHeatmap matrix={matrix} seriesMeta={SERIES_META} rollingCorr={rollingCorr} />
           </div>
         </section>
 
