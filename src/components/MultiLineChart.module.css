@@ -126,6 +126,16 @@
   opacity: 0.7;
 }
 
+.anomalyDotLegend {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
 /* Tooltip */
 .tooltip {
   background: #1a1e2b;
@@ -167,4 +177,17 @@
   font-weight: 600;
   font-family: var(--font-mono);
   color: var(--text-primary);
+}
+
+.anomalyBadge {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--accent-red);
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: 3px;
+  padding: 1px 5px;
+  white-space: nowrap;
+  margin-left: 4px;
 }
