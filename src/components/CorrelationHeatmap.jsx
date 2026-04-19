@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import styles from './CorrelationHeatmap.module.css'
 
 const SERIES_IDS = ['FEDFUNDS', 'CPIAUCSL', 'UNRATE']
+const SHORT_LABEL = { FEDFUNDS: 'FED', CPIAUCSL: 'CPI', UNRATE: 'UNR' }
 
 function computePearson(timeSeries, sidA, sidB, window) {
   const pts = timeSeries
@@ -133,7 +134,7 @@ export default function CorrelationHeatmap({ matrix: initialMatrix, seriesMeta, 
         {SERIES_IDS.map(sid => (
           <div key={sid} className={styles.colHeader}>
             <span className={styles.dot} style={{ background: seriesMeta[sid].color }} />
-            {sid}
+            {SHORT_LABEL[sid]}
           </div>
         ))}
 
@@ -142,7 +143,7 @@ export default function CorrelationHeatmap({ matrix: initialMatrix, seriesMeta, 
           <>
             <div key={`row-${rowId}`} className={styles.rowHeader}>
               <span className={styles.dot} style={{ background: seriesMeta[rowId].color }} />
-              {rowId}
+              {SHORT_LABEL[rowId]}
             </div>
             {SERIES_IDS.map(colId => {
               const val = matrix[rowId]?.[colId] ?? null
