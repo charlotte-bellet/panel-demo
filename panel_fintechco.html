@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code — FinTechCo · Executive Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F5F0E8;--cream-light:#FAF7F2;--cream-dark:#EDE6D9;--coral:#D97757;--coral-light:#E8956F;--coral-dark:#BF5F3F;--ink:#1A1A1A;--ink-light:#3D3929;--ink-muted:#6B6456;--ink-faint:#9B9488;--white:#FFFFFF;--sage:#7A8B6F;--sage-light:#E8EDE4;--blue-deep:#4A6274;--blue-light:#E3ECF1;--red:#BF3F3F;--green:#5A7A4F;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--cream);}
+.slides-container{height:100vh;overflow:hidden;position:relative;}
+.slide{height:100vh;width:100vw;display:none;flex-direction:column;justify-content:center;align-items:center;padding:60px 80px;position:absolute;top:0;left:0;opacity:0;transition:opacity 0.5s cubic-bezier(0.4,0,0.2,1);font-size:20px;}
+.slide.active{display:flex;opacity:1;}
+.slide-cover{background:var(--coral);padding:0;}
+.slide-cream{background:var(--cream);}
+.slide-white{background:var(--white);}
+.slide-warm{background:var(--cream-light);}
+h2{font-family:'Source Serif 4',Georgia,serif;font-size:2.6em;font-weight:600;line-height:1.15;letter-spacing:-0.015em;text-align:center;margin-bottom:16px;color:var(--ink);}
+.subtitle{font-size:1.1em;font-weight:300;text-align:center;max-width:800px;line-height:1.5;color:var(--ink-muted);}
+.ft{position:absolute;bottom:0;left:0;right:0;height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
+.ft-logo{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--ink-faint);}
+.ft-r{font-size:10px;font-weight:500;letter-spacing:.06em;color:var(--ink-faint);display:flex;gap:22px;}
+.term{background:#1C1C14;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.term-bar{background:#2A2A20;padding:9px 16px;display:flex;align-items:center;gap:7px;}
+.td{width:10px;height:10px;border-radius:50%;}
+.term-name{font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,.3);margin:0 auto;}
+.term-body{padding:18px 22px;font-family:monospace;font-size:14px;line-height:1.8;}
+.t-pr{color:#8EC07C;}.t-cm{color:#EBDBB2;}.t-ou{color:#665C54;}.t-ok{color:#B8BB26;}.t-hi{color:#E8A882;font-weight:600;}
+.nav-container{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:1000;background:rgba(26,26,26,0.85);backdrop-filter:blur(12px);padding:8px 16px;border-radius:40px;}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(245,240,232,0.25);cursor:pointer;transition:all 0.3s ease;border:none;}
+.nav-dot:hover{background:rgba(245,240,232,0.5);}
+.nav-dot.active{background:var(--coral);transform:scale(1.4);}
+.nav-dot.reserve{background:rgba(217,119,87,.15);border:1px dashed rgba(217,119,87,.4);}
+.nav-dot.reserve.active{background:rgba(217,119,87,.5);}
+.nav-sep{width:1px;height:8px;background:rgba(245,240,232,0.15);margin:0 3px;}
+.nav-arrows{position:fixed;bottom:24px;right:24px;display:flex;gap:6px;z-index:1000;}
+.nav-arrow{width:40px;height:40px;border-radius:50%;background:rgba(26,26,26,0.85);backdrop-filter:blur(12px);border:none;cursor:pointer;font-size:1em;color:var(--cream);display:flex;align-items:center;justify-content:center;transition:all 0.2s ease;}
+.nav-arrow:hover{background:var(--coral);}
+.slide-counter{position:fixed;bottom:24px;left:24px;font-size:0.75em;z-index:1000;background:rgba(26,26,26,0.85);backdrop-filter:blur(12px);padding:6px 14px;border-radius:20px;color:rgba(245,240,232,0.5);}
+.slide-counter .cur{color:var(--coral);font-weight:600;}
+.watermark{position:fixed;top:20px;left:28px;z-index:1000;font-family:'Source Serif 4',Georgia,serif;font-size:1em;font-weight:600;letter-spacing:-0.02em;transition:color 0.4s ease;}
+.watermark.light{color:rgba(255,255,255,.5);}
+.watermark.dark{color:var(--ink);}
+.reserve-badge{position:absolute;top:16px;right:20px;font-size:0.6em;font-weight:600;color:rgba(217,119,87,.6);letter-spacing:1px;border:1px dashed rgba(217,119,87,.3);border-radius:4px;padding:3px 9px;pointer-events:none;}
+</style>
+</head>
+<body>
+<div class="slides-container">
+
+<!-- S1: COVER -->
+<div class="slide slide-cover active" data-wm="light">
+    <div style="width:100%;height:100%;padding:36px 52px;display:flex;flex-direction:column;justify-content:center;gap:24px;">
+        <div style="height:12px;"></div>
+        <div>
+            <div style="font-size:0.8em;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:12px;">Executive Briefing</div>
+            <div style="font-family:'Source Serif 4',Georgia,serif;font-size:clamp(40px,7vw,82px);font-weight:700;color:#FFFFFF;line-height:1.0;">Claude Code<br>at FinTechCo</div>
+            <p style="font-size:1.1em;font-weight:300;color:rgba(255,255,255,.6);margin-top:16px;max-width:600px;">Ship faster. Stay secure. Measure everything.</p>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:10px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.45);">ANTHROP\C</span>
+            <span style="font-size:10px;font-weight:400;color:rgba(255,255,255,.45);">CONFIDENTIAL</span>
+        </div>
+    </div>
+</div>
+
+<!-- S2: AGENDA -->
+<div class="slide slide-cream" data-wm="dark" style="padding:0;">
+    <div style="width:100%;height:100%;padding:48px 56px 40px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:8px;">Agenda</div>
+        <h2 style="text-align:left;font-size:2em;margin-bottom:28px;">What we'll cover</h2>
+
+        <div style="display:flex;flex-direction:column;gap:10px;max-width:800px;">
+            <div style="display:grid;grid-template-columns:40px 1fr;align-items:center;gap:12px;background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:12px 18px;">
+                <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.4em;font-weight:700;color:var(--coral);">01</div>
+                <div><div style="font-size:0.92em;font-weight:600;color:var(--ink);">What Claude Code is — and why it matters for you</div><div style="font-size:0.72em;color:var(--ink-muted);">Not autocomplete. An agent that reasons across your codebase.</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:40px 1fr;align-items:center;gap:12px;background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:12px 18px;">
+                <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.4em;font-weight:700;color:var(--coral);">02</div>
+                <div><div style="font-size:0.92em;font-weight:600;color:var(--ink);">Your reality — SDLC & where the time goes</div><div style="font-size:0.72em;color:var(--ink-muted);">Notion → VS Code → GitHub → SonarQube → Airflow → AWS+GCP</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:40px 1fr;align-items:center;gap:12px;background:rgba(217,119,87,0.06);border:1px solid rgba(217,119,87,0.2);border-radius:10px;padding:12px 18px;">
+                <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.4em;font-weight:700;color:var(--coral);">03</div>
+                <div><div style="font-size:0.92em;font-weight:600;color:var(--ink);">Live demo — Notion ticket → code → PR</div><div style="font-size:0.72em;color:var(--ink-muted);">Real fintech scenario, three MCP servers, zero copy-paste.</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:40px 1fr;align-items:center;gap:12px;background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:12px 18px;">
+                <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.4em;font-weight:700;color:var(--coral);">04</div>
+                <div><div style="font-size:0.92em;font-weight:600;color:var(--ink);">Business value — $1,032K gross, $705K net, 3.2× ROI</div><div style="font-size:0.72em;color:var(--ink-muted);">By team. Sensitivity range. Every input adjustable.</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:40px 1fr;align-items:center;gap:12px;background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:12px 18px;">
+                <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.4em;font-weight:700;color:var(--coral);">05</div>
+                <div><div style="font-size:0.92em;font-weight:600;color:var(--ink);">Proof — Ramp case study</div><div style="font-size:0.72em;color:var(--ink-muted);">1M+ lines in 30 days. Organic adoption across 6 teams.</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:40px 1fr;align-items:center;gap:12px;background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:12px 18px;">
+                <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.4em;font-weight:700;color:var(--coral);">06</div>
+                <div><div style="font-size:0.92em;font-weight:600;color:var(--ink);">Why Claude Code — vs. Copilot, Cursor & others</div><div style="font-size:0.72em;color:var(--ink-muted);">Governance at 180 engineers is the differentiator.</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:40px 1fr;align-items:center;gap:12px;background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:12px 18px;">
+                <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.4em;font-weight:700;color:var(--coral);">07</div>
+                <div><div style="font-size:0.92em;font-weight:600;color:var(--ink);">Next steps — phased rollout & timeline</div><div style="font-size:0.72em;color:var(--ink-muted);">15 engineers, 4-week data gate, go/no-go with your metrics.</div></div>
+            </div>
+        </div>
+
+        <div style="font-size:0.75em;color:var(--ink-faint);margin-top:16px;font-style:italic;">What would make this meeting successful for each of you?</div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+<!-- S3a: WHAT CLAUDE CODE IS — focused -->
+<div class="slide slide-cream" data-wm="dark" style="padding:0;">
+    <div style="width:100%;height:100%;display:grid;grid-template-columns:1fr 1.1fr;padding:48px 56px 40px;align-items:center;">
+        <div style="display:flex;flex-direction:column;gap:14px;padding-right:36px;border-right:1px solid var(--cream-dark);">
+            <div>
+                <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:6px;">01 · What Claude Code Is</div>
+                <h2 style="text-align:left;font-size:2.2em;margin-bottom:6px;">Not autocomplete.<br>An agent that reasons.</h2>
+                <p style="font-size:0.88em;color:var(--ink-muted);line-height:1.6;">An agentic coding tool that reads your entire codebase, plans multi-step tasks, and executes — with human approval at every step.</p>
+            </div>
+            <!-- Key figures — dropped $2.5B revenue, kept customer-relevant stats -->
+            <div style="font-size:0.62em;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--ink-faint);">Traction · Since May 2025</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:14px 8px;text-align:center;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.6em;font-weight:700;color:var(--coral);">46%</div><div style="font-size:0.65em;color:var(--ink-muted);margin-top:2px;">"most loved" dev tool<br><span style="font-size:0.85em;color:var(--ink-faint);">2026 developer survey</span></div></div>
+                <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:14px 8px;text-align:center;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.6em;font-weight:700;color:var(--coral);">70%</div><div style="font-size:0.65em;color:var(--ink-muted);margin-top:2px;">Fortune 100<br><span style="font-size:0.85em;color:var(--ink-faint);">enterprise adoption</span></div></div>
+                <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:14px 8px;text-align:center;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.6em;font-weight:700;color:var(--coral);">80.9%</div><div style="font-size:0.65em;color:var(--ink-muted);margin-top:2px;">SWE-bench Verified<br><span style="font-size:0.85em;color:var(--ink-faint);">#1 coding benchmark</span></div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:10px;text-align:center;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.3em;font-weight:700;color:var(--ink);">500+</div><div style="font-size:0.62em;color:var(--ink-muted);">orgs paying $1M+/yr</div></div>
+                <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:10px;text-align:center;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.3em;font-weight:700;color:var(--ink);">2.3</div><div style="font-size:0.62em;color:var(--ink-muted);">avg AI tools per dev — CC layers on</div></div>
+            </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;padding-left:36px;">
+            <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:2px;">Business Value Pillars</div>
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:18px 20px;">
+                <div style="font-size:0.95em;font-weight:600;color:var(--ink);margin-bottom:4px;">⚡ Ship faster on the hard problems</div>
+                <div style="font-size:0.82em;color:var(--ink-muted);line-height:1.55;">Agentic reasoning across your codebase — feature delivery, language migrations, monolith decomposition, legacy modernization. Engineers focus on payment logic, not boilerplate.</div>
+                <div style="font-size:0.78em;color:var(--coral);margin-top:6px;">Ramp: 1M+ lines AI code in 30 days · 80% faster incident triage</div>
+            </div>
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:18px 20px;">
+                <div style="font-size:0.95em;font-weight:600;color:var(--ink);margin-bottom:4px;">🔌 180 engineers adopt, not just 5</div>
+                <div style="font-size:0.82em;color:var(--ink-muted);line-height:1.55;">VS Code, terminal, web, Slack, mobile. Meets every team in their existing workflow.</div>
+                <div style="font-size:0.78em;color:var(--coral);margin-top:6px;">Ramp: 50% weekly active usage · organic spread across 6 departments</div>
+            </div>
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:18px 20px;">
+                <div style="font-size:0.95em;font-weight:600;color:var(--ink);margin-bottom:4px;">🔒 Governance that scales with adoption</div>
+                <div style="font-size:0.82em;color:var(--ink-muted);line-height:1.55;">SOC 2 Type II · managed settings via MDM · per-user spend caps · audit logs · US-only inference.</div>
+                <div style="font-size:0.78em;color:var(--coral);margin-top:6px;">Claude Code Security: reasoning-based scanning that complements SonarQube</div>
+            </div>
+        </div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+
+<!-- S3: YOUR REALITY — 2 columns -->
+<div class="slide slide-white" data-wm="dark" style="padding:0;">
+    <div style="width:100%;height:100%;display:grid;grid-template-columns:1fr 1.1fr;padding:48px 56px 40px;align-items:center;">
+        <!-- Left: current state -->
+        <div style="display:flex;flex-direction:column;gap:10px;padding-right:36px;border-right:1px solid var(--cream-dark);">
+            <div>
+                <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:6px;">02 · Your Reality Today</div>
+                <h2 style="text-align:left;font-size:2em;margin-bottom:0;">180 engineers.<br>Multiple Stacks.</h2>
+            </div>
+            <!-- Teams -->
+            <div style="display:flex;flex-direction:column;gap:4px;">
+                <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:10px;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-size:0.85em;font-weight:600;color:var(--ink);">Software Engineers</div><div style="font-size:0.72em;color:var(--ink-muted);font-family:monospace;">Python · TypeScript · Java</div></div>
+                    <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.6em;font-weight:700;color:var(--coral);">120</div>
+                </div>
+                <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:10px;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-size:0.85em;font-weight:600;color:var(--ink);">Data Scientists</div><div style="font-size:0.72em;color:var(--ink-muted);font-family:monospace;">Python · Jupyter · scikit-learn · TensorFlow</div></div>
+                    <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.6em;font-weight:700;color:var(--coral);">40</div>
+                </div>
+                <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:10px;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-size:0.85em;font-weight:600;color:var(--ink);">Site Reliability Engineers</div><div style="font-size:0.72em;color:var(--ink-muted);font-family:monospace;">Python · shell scripts · Go</div></div>
+                    <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.6em;font-weight:700;color:var(--coral);">20</div>
+                </div>
+            </div>
+            <!-- SDLC with Claude integration -->
+            <div style="font-size:0.62em;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--ink-faint);">SDLC · How Claude Code Plugs In</div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+                <div style="display:flex;align-items:center;gap:8px;background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:8px;padding:5px 12px;"><span style="font-size:0.6em;font-weight:700;letter-spacing:1px;color:var(--coral);min-width:42px;">PLAN</span><span style="font-size:0.8em;font-weight:600;color:var(--ink);">Notion</span><span style="font-size:0.68em;color:var(--ink-muted);margin-left:auto;">tickets</span><span style="font-size:0.52em;font-weight:700;color:var(--coral);background:rgba(217,119,87,.1);padding:1px 5px;border-radius:3px;margin-left:6px;">MCP ↔</span></div>
+                <div style="display:flex;align-items:center;gap:8px;background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:8px;padding:5px 12px;"><span style="font-size:0.6em;font-weight:700;letter-spacing:1px;color:var(--coral);min-width:42px;">CODE</span><span style="font-size:0.8em;font-weight:600;color:var(--ink);">VS Code</span><span style="font-size:0.68em;color:var(--ink-muted);margin-left:auto;">IDE</span><span style="font-size:0.52em;font-weight:700;color:var(--coral);background:rgba(217,119,87,.1);padding:1px 5px;border-radius:3px;margin-left:6px;">EXT ↔</span></div>
+                <div style="display:flex;align-items:center;gap:8px;background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:8px;padding:5px 12px;"><span style="font-size:0.6em;font-weight:700;letter-spacing:1px;color:var(--coral);min-width:42px;">VCS</span><span style="font-size:0.8em;font-weight:600;color:var(--ink);">GitHub</span><span style="font-size:0.68em;color:var(--ink-muted);margin-left:auto;">PRs · CI/CD · <strong style="color:var(--coral);">avg 3 hr</strong></span><span style="font-size:0.52em;font-weight:700;color:var(--coral);background:rgba(217,119,87,.1);padding:1px 5px;border-radius:3px;margin-left:6px;">MCP ↔</span></div>
+                <div style="display:flex;align-items:center;gap:8px;background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:8px;padding:5px 12px;"><span style="font-size:0.6em;font-weight:700;letter-spacing:1px;color:var(--coral);min-width:42px;">QUAL</span><span style="font-size:0.8em;font-weight:600;color:var(--ink);">SonarQube</span><span style="font-size:0.68em;color:var(--ink-muted);margin-left:auto;">SAST</span><span style="font-size:0.52em;font-weight:700;color:var(--green);background:rgba(90,122,79,.1);padding:1px 5px;border-radius:3px;margin-left:6px;">+ CC Sec</span></div>
+                <div style="display:flex;align-items:center;gap:8px;background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:8px;padding:5px 12px;"><span style="font-size:0.6em;font-weight:700;letter-spacing:1px;color:var(--coral);min-width:42px;">ORCH</span><span style="font-size:0.8em;font-weight:600;color:var(--ink);">Airflow</span><span style="font-size:0.68em;color:var(--ink-muted);margin-left:auto;">pipelines</span><span style="font-size:0.52em;font-weight:700;color:var(--coral);background:rgba(217,119,87,.1);padding:1px 5px;border-radius:3px;margin-left:6px;">MCP ↔</span></div>
+                <div style="display:flex;align-items:center;gap:8px;background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:8px;padding:5px 12px;"><span style="font-size:0.6em;font-weight:700;letter-spacing:1px;color:var(--coral);min-width:42px;">INFRA</span><span style="font-size:0.8em;font-weight:600;color:var(--ink);">AWS + GCP</span><span style="font-size:0.68em;color:var(--ink-muted);margin-left:auto;">multi-cloud</span><span style="font-size:0.52em;font-weight:700;color:var(--blue-deep);background:rgba(74,98,116,.1);padding:1px 5px;border-radius:3px;margin-left:6px;">DIRECT</span></div>
+            </div>
+            <!-- Governance bar -->
+            <div style="background:var(--ink);border-radius:8px;padding:6px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span style="font-size:0.72em;font-weight:600;color:var(--white);">Enterprise Governance</span>
+                <span style="font-size:0.55em;color:rgba(255,255,255,.4);">SOC 2 · MDM · SSO · spend caps · audit logs · US-only · no intermediary servers</span>
+            </div>
+        </div>
+        <!-- Right: Where the time goes — softer framing -->
+        <div style="display:flex;flex-direction:column;gap:12px;padding-left:36px;">
+            <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:2px;">Where the Time Goes</div>
+            <div style="background:var(--cream-light);border-radius:12px;padding:14px 18px;border-left:4px solid var(--coral);display:flex;gap:12px;">
+                <span style="font-size:1.1em;">⏱️</span>
+                <div>
+                    <div style="font-size:0.88em;font-weight:600;color:var(--ink);">17.3 hrs/week per dev on tech debt</div>
+                    <div style="font-size:0.78em;color:var(--ink-muted);line-height:1.55;">McKinsey. At 180 engineers that's 3,100 hrs/week not building features.</div>
+                </div>
+            </div>
+            <div style="background:var(--cream-light);border-radius:12px;padding:14px 18px;border-left:4px solid var(--coral);display:flex;gap:12px;">
+                <span style="font-size:1.1em;">🏦</span>
+                <div>
+                    <div style="font-size:0.88em;font-weight:600;color:var(--ink);">18,000 hrs/year on PR review alone</div>
+                    <div style="font-size:0.78em;color:var(--ink-muted);line-height:1.55;">3-hour PRs × 120 SWEs × 2 PRs/wk. That's review time alone — before rework.</div>
+                </div>
+            </div>
+
+            <!-- Opportunity framing instead of fear -->
+            <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--ink-faint);margin-top:4px;">The Opportunity</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:12px;padding:16px;text-align:center;">
+                    <div style="font-family:'Source Serif 4',Georgia,serif;font-size:2em;font-weight:700;color:var(--coral);">$1,032K</div>
+                    <div style="font-size:0.72em;color:var(--ink-muted);margin-top:4px;">recoverable productivity / year</div>
+                </div>
+                <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:12px;padding:16px;text-align:center;">
+                    <div style="font-family:'Source Serif 4',Georgia,serif;font-size:2em;font-weight:700;color:var(--coral);">3.2×</div>
+                    <div style="font-size:0.72em;color:var(--ink-muted);margin-top:4px;">ROI</div>
+                </div>
+            </div>
+            <div style="background:rgba(74,98,116,0.06);border:1px solid rgba(74,98,116,0.15);border-radius:10px;padding:10px 14px;">
+                <div style="font-size:0.78em;color:var(--blue-deep);line-height:1.55;">84% of devs already use AI tools daily. The question isn't whether to adopt — it's which tool gives you governance at scale.</div>
+            </div>
+        </div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+<!-- S4: LIVE DEMO — split -->
+<div class="slide slide-cream" data-wm="dark" style="padding:0;">
+    <div style="width:100%;height:100%;display:grid;grid-template-columns:1fr 1.15fr;padding:48px 56px 40px;align-items:center;">
+        <div style="display:flex;flex-direction:column;gap:10px;padding-right:36px;border-right:1px solid var(--cream-dark);">
+            <div>
+                <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:6px;">03 · Live Demo · Notion → GitHub</div>
+                <h2 style="text-align:left;font-size:1.7em;margin-bottom:0;">Notion ticket to<br>merged PR<br>in 10 minutes</h2>
+            </div>
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:12px 16px;">
+                <div style="font-size:0.65em;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--coral);">The Scenario</div>
+                <div style="font-size:0.88em;font-weight:400;color:var(--ink);line-height:1.55;margin-top:4px;">Your team receives a new ticket to update the MacroPulse dashboard.</div>
+            </div>
+            <!-- MCP flow -->
+            <div style="font-size:0.65em;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--ink-faint);margin-top:2px;">MCP Integration Flow</div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;"><span style="font-family:'Source Serif 4',Georgia,serif;font-size:1.1em;font-weight:700;color:var(--coral);">1</span><div><div style="font-size:0.82em;font-weight:600;color:var(--ink);">Pick up Notion ticket via MCP <span style="font-weight:400;color:var(--ink-faint);">30s</span></div><div style="font-size:0.72em;color:var(--ink-muted);">Claude reads the ticket — just "Update the MacroPulse dashboard." No spec attached.</div></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;"><span style="font-family:'Source Serif 4',Georgia,serif;font-size:1.1em;font-weight:700;color:var(--coral);">2</span><div><div style="font-size:0.82em;font-weight:600;color:var(--ink);">Read existing code + plan approach <span style="font-weight:400;color:var(--ink-faint);">~1 min</span></div><div style="font-size:0.72em;color:var(--ink-muted);">Claude explores the repo, understands the current dashboard, identifies what needs updating, and proposes a plan</div></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;"><span style="font-family:'Source Serif 4',Georgia,serif;font-size:1.1em;font-weight:700;color:var(--coral);">3</span><div><div style="font-size:0.82em;font-weight:600;color:var(--ink);">Fetch data + write code + update dashboard <span style="font-weight:400;color:var(--ink-faint);">~5 min</span></div><div style="font-size:0.72em;color:var(--ink-muted);">FRED API pipeline, new analysis, updated interactive dashboard — production-grade</div></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;"><span style="font-family:'Source Serif 4',Georgia,serif;font-size:1.1em;font-weight:700;color:var(--coral);">4</span><div><div style="font-size:0.82em;font-weight:600;color:var(--ink);">Commit + open PR via GitHub MCP <span style="font-weight:400;color:var(--ink-faint);">~2 min</span></div><div style="font-size:0.72em;color:var(--ink-muted);">Tests, commit, PR created and linked back to the Notion ticket — ready for review</div></div></div>
+            </div>
+            <div style="background:var(--coral);border-radius:10px;padding:10px 14px;">
+                <div style="font-size:0.78em;font-weight:400;color:var(--white);line-height:1.5;">Notion ticket → methodology → code → tests → PR in 10 minutes. Three MCP servers, zero copy-paste.</div>
+            </div>
+            <!-- MCP ecosystem note -->
+            <div style="background:rgba(74,98,116,0.06);border:1px solid rgba(74,98,116,0.15);border-radius:10px;padding:8px 12px;">
+                <div style="font-size:0.72em;color:var(--blue-deep);line-height:1.5;"><strong>MCP:</strong> Same pattern works with Jira, Linear, Slack, Confluence — 1,900+ servers. Your tools become Claude's tools.</div>
+            </div>
+        </div>
+        <!-- Terminal -->
+        <div style="padding-left:36px;display:flex;align-items:center;">
+            <div class="term">
+                <div class="term-bar"><div class="td" style="background:#FF5F57;"></div><div class="td" style="background:#FEBC2E;"></div><div class="td" style="background:#28C840;"></div><span class="term-name">claude — FinTechCo demo</span></div>
+                <div class="term-body">
+                    <div><span class="t-pr">$ </span><span class="t-cm">claude</span></div>
+                    <div>&nbsp;</div>
+                    <div><span class="t-pr">&gt; </span><span class="t-cm">"Pick up the MacroPulse ticket<br>&nbsp;&nbsp; from our Notion board and solve it."</span></div>
+                    <div>&nbsp;</div>
+                    <div class="t-ou">Reading Notion ticket via MCP...</div>
+                    <div class="t-ou">Ticket: "Update the MacroPulse dashboard"</div>
+                    <div class="t-ou">Sprint: Q2-analytics · No spec attached</div>
+                    <div>&nbsp;</div>
+                    <div class="t-ou">Exploring repo to understand MacroPulse...</div>
+                    <div class="t-ok">✓ Found macropulse/ — Flask app + FRED data</div>
+                    <div class="t-ok">✓ Last updated: 3 months ago · stale data</div>
+                    <div class="t-ou">Plan: refresh data, update analysis, rebuild charts</div>
+                    <div class="t-ok">✓ Approach approved — writing code</div>
+                    <div>&nbsp;</div>
+                    <div class="t-ou">Updating macropulse/pipeline.py...</div>
+                    <div class="t-ok">✓ Fed rate: refreshed through 2025 (516 obs)</div>
+                    <div class="t-ok">✓ VIX: refreshed through 2025 (8,812 obs)</div>
+                    <div class="t-ok">✓ Merged dataset · 47 gaps interpolated</div>
+                    <div class="t-ok">✓ dashboard.html · charts rebuilt</div>
+                    <div>&nbsp;</div>
+                    <div class="t-ou">Running tests...</div>
+                    <div class="t-ok">✓ 12 tests passing</div>
+                    <div>&nbsp;</div>
+                    <div class="t-ou">Committing + creating PR via GitHub MCP...</div>
+                    <div class="t-ok">✓ PR #87 created · 4 files changed</div>
+                    <div class="t-ok">✓ Linked to Notion ticket · status → In Review</div>
+                    <div>&nbsp;</div>
+                    <div class="t-hi">Total: 8 min 34 sec · Ticket → PR</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+<!-- S5: BVA — lightened -->
+<div class="slide slide-warm" data-wm="dark" style="padding:0;">
+    <div style="width:100%;height:100%;display:grid;grid-template-columns:1fr 1.2fr;padding:48px 56px 40px;align-items:center;">
+        <!-- Left: ROI headline + investment -->
+        <div style="display:flex;flex-direction:column;gap:12px;padding-right:36px;border-right:1px solid var(--cream-dark);">
+            <div>
+                <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:6px;">04 · Business Value Assessment</div>
+                <h2 style="text-align:left;font-size:2.1em;margin-bottom:4px;">$705K net value.<br>3.2× ROI.</h2>
+            </div>
+            <!-- Hero numbers -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                <div style="background:var(--coral);border-radius:12px;padding:16px 10px;text-align:center;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.8em;font-weight:700;color:var(--white);">$1,032K</div><div style="font-size:0.65em;color:rgba(255,255,255,.6);margin-top:2px;">gross productivity</div></div>
+                <div style="background:var(--coral);border-radius:12px;padding:16px 10px;text-align:center;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.8em;font-weight:700;color:var(--white);">$327K</div><div style="font-size:0.65em;color:rgba(255,255,255,.6);margin-top:2px;">total investment / yr</div></div>
+                <div style="background:var(--coral);border-radius:12px;padding:16px 10px;text-align:center;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.8em;font-weight:700;color:var(--white);">3.8 mo</div><div style="font-size:0.65em;color:rgba(255,255,255,.6);margin-top:2px;">payback period</div></div>
+            </div>
+            <!-- Sensitivity -->
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:12px;padding:12px 16px;font-size:0.78em;">
+                <div style="display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:3px 0;border-bottom:1px solid var(--cream-dark);"><span style="color:var(--ink-faint);">Conservative (−30%)</span><span>$395K net</span><span style="font-weight:600;color:var(--ink-faint);min-width:36px;text-align:right;">2.2×</span></div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:3px 0;border-bottom:1px solid var(--cream-dark);font-weight:600;"><span style="color:var(--coral);">Base case</span><span>$705K net</span><span style="color:var(--coral);min-width:36px;text-align:right;">3.2×</span></div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:3px 0;"><span style="color:var(--ink-faint);">Optimistic (+20%)</span><span>$912K net</span><span style="font-weight:600;color:var(--green);min-width:36px;text-align:right;">3.8×</span></div>
+            </div>
+            <!-- Cost of waiting -->
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:10px 16px;text-align:center;">
+                <span style="font-family:'Source Serif 4',Georgia,serif;font-size:1.3em;font-weight:700;color:var(--coral);">$86K</span>
+                <span style="font-size:0.78em;color:var(--ink-muted);margin-left:8px;">cost of waiting / month</span>
+            </div>
+            <div style="font-size:0.65em;color:var(--ink-faint);font-style:italic;">Full model in <a href="https://docs.google.com/spreadsheets/d/1Q3Gk86U2aS9gvcJk_22Pju823K0pcK-cUa7NrwLtB-w/edit?gid=132597457#gid=132597457" target="_blank" style="color:var(--coral);text-decoration:underline;" onclick="event.stopPropagation();">BVA Calculator ↗</a> · Every input adjustable</div>
+        </div>
+        <!-- Right: Value by team — one card each -->
+        <div style="display:flex;flex-direction:column;gap:10px;padding-left:36px;">
+            <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);">Value by Team</div>
+            <!-- SWE -->
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:14px 18px;">
+                <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.6em;font-weight:700;color:var(--coral);">$778K</div><div style="font-size:0.9em;font-weight:600;color:var(--ink);">120 Software Engineers</div></div>
+                <div style="font-size:0.78em;color:var(--ink-muted);line-height:1.55;">PR review −20% · test generation −63% · code modernization · tech debt 17h→12h/wk</div>
+            </div>
+            <!-- DS -->
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:14px 18px;">
+                <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.6em;font-weight:700;color:var(--coral);">$161K</div><div style="font-size:0.9em;font-weight:600;color:var(--ink);">40 Data Scientists</div></div>
+                <div style="font-size:0.78em;color:var(--ink-muted);line-height:1.55;">Fraud models 2d→5h · notebook→prod −67% · auto-documentation −75%</div>
+            </div>
+            <!-- SRE -->
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:14px 18px;">
+                <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.6em;font-weight:700;color:var(--coral);">$93K</div><div style="font-size:0.9em;font-weight:600;color:var(--ink);">20 SREs</div></div>
+                <div style="font-size:0.78em;color:var(--ink-muted);line-height:1.55;">Incident triage 45→10 min · runbook & IaC −75% · post-mortems −75%</div>
+            </div>
+            <!-- Quality & Risk -->
+            <div style="background:rgba(90,122,79,0.06);border:1px solid rgba(90,122,79,0.2);border-radius:14px;padding:12px 18px;">
+                <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.4em;font-weight:700;color:var(--green);">$3.5M</div><div style="font-size:0.85em;font-weight:600;color:var(--ink);">Quality & Risk</div><span style="font-size:0.58em;font-weight:600;color:var(--ink-faint);background:var(--cream-light);padding:1px 6px;border-radius:4px;">SUPPLEMENTARY</span></div>
+                <div style="font-size:0.75em;color:var(--ink-muted);line-height:1.55;">Security incidents prevented · defect reduction · talent retention — excluded from ROI above</div>
+            </div>
+            <!-- Additive note -->
+            <div style="background:rgba(74,98,116,0.06);border:1px solid rgba(74,98,116,0.15);border-radius:10px;padding:8px 14px;">
+                <div style="font-size:0.72em;color:var(--blue-deep);">Nothing replaced — Claude Code layers onto your existing stack.</div>
+            </div>
+        </div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+<!-- S6: RAMP CASE STUDY — single dense slide -->
+<div class="slide slide-cream" data-wm="dark" style="padding:0;">
+    <div style="width:100%;height:100%;display:grid;grid-template-columns:1fr 1.2fr;padding:44px 56px 36px;align-items:center;">
+        <!-- Left: Profile + Metrics + Quote -->
+        <div style="display:flex;flex-direction:column;gap:9px;padding-right:32px;border-right:1px solid var(--cream-dark);">
+            <div>
+                <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:4px;">05 · Case Study</div>
+                <h2 style="text-align:left;font-size:2.1em;margin-bottom:2px;">Ramp</h2>
+                <p style="font-size:0.82em;color:var(--ink-muted);line-height:1.45;">Financial operations platform · Ships features every other day · Organic adoption, no top-down mandate.</p>
+            </div>
+            <!-- 4 hero metrics -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:12px 10px;text-align:center;">
+                    <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.9em;font-weight:700;color:var(--coral);line-height:1;">1M+</div>
+                    <div style="font-size:0.6em;color:var(--ink-muted);margin-top:2px;">lines AI code / 30 days</div>
+                </div>
+                <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:12px 10px;text-align:center;">
+                    <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.9em;font-weight:700;color:var(--coral);line-height:1;">80%</div>
+                    <div style="font-size:0.6em;color:var(--ink-muted);margin-top:2px;">faster incident triage</div>
+                </div>
+                <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:12px 10px;text-align:center;">
+                    <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.9em;font-weight:700;color:var(--coral);line-height:1;">50%</div>
+                    <div style="font-size:0.6em;color:var(--ink-muted);margin-top:2px;">weekly active engineers</div>
+                </div>
+                <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:12px 10px;text-align:center;">
+                    <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.9em;font-weight:700;color:var(--coral);line-height:1;">1–2d</div>
+                    <div style="font-size:0.6em;color:var(--ink-muted);margin-top:2px;">saved / ML pipeline</div>
+                </div>
+            </div>
+            <!-- Quote -->
+            <div style="background:rgba(217,119,87,0.06);border:1px solid rgba(217,119,87,0.18);border-radius:10px;padding:10px 14px;">
+                <div style="font-family:'Source Serif 4',Georgia,serif;font-size:0.78em;font-style:italic;color:var(--ink);line-height:1.45;">"Engineers would try it on their own and have such a transformative experience that they felt compelled to share with their colleagues."</div>
+                <div style="font-size:0.65em;color:var(--ink-muted);margin-top:4px;font-weight:600;">Austin Ray · Senior SWE, Ramp</div>
+            </div>
+        </div>
+        <!-- Right: Use cases by team + FinTechCo bridge -->
+        <div style="display:flex;flex-direction:column;gap:7px;padding-left:32px;">
+            <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);">Impact Across Teams</div>
+            <!-- Compact use-case rows -->
+            <div style="display:flex;flex-direction:column;gap:4px;">
+                <div style="display:grid;grid-template-columns:110px 1fr;align-items:center;background:var(--white);border:1px solid var(--cream-dark);border-radius:8px;padding:7px 12px;">
+                    <span style="font-size:0.78em;font-weight:600;color:var(--ink);">⚙️ Engineering</span>
+                    <span style="font-size:0.72em;color:var(--ink-muted);">Parallel sessions · test-fix loop · ticket-to-code · auto-docs</span>
+                </div>
+                <div style="display:grid;grid-template-columns:110px 1fr;align-items:center;background:var(--white);border:1px solid var(--cream-dark);border-radius:8px;padding:7px 12px;">
+                    <span style="font-size:0.78em;font-weight:600;color:var(--ink);">📊 Data</span>
+                    <span style="font-size:0.72em;color:var(--ink-muted);">EDA → Metaflow pipelines · NL queries on Snowflake</span>
+                </div>
+                <div style="display:grid;grid-template-columns:110px 1fr;align-items:center;background:var(--white);border:1px solid var(--cream-dark);border-radius:8px;padding:7px 12px;">
+                    <span style="font-size:0.78em;font-weight:600;color:var(--ink);">🚨 SRE / Security</span>
+                    <span style="font-size:0.72em;color:var(--ink-muted);">MCP → Datadog + Sentry · consolidated incident context</span>
+                </div>
+                <div style="display:grid;grid-template-columns:110px 1fr;align-items:center;background:var(--white);border:1px solid var(--cream-dark);border-radius:8px;padding:7px 12px;">
+                    <span style="font-size:0.78em;font-weight:600;color:var(--ink);">🎨 Product & Mkt</span>
+                    <span style="font-size:0.72em;color:var(--ink-muted);">Rapid prototyping · compliance copy · ad creative generation</span>
+                </div>
+                <div style="display:grid;grid-template-columns:110px 1fr;align-items:center;background:var(--white);border:1px solid var(--cream-dark);border-radius:8px;padding:7px 12px;">
+                    <span style="font-size:0.78em;font-weight:600;color:var(--ink);">⚖️ Legal & Ops</span>
+                    <span style="font-size:0.72em;color:var(--ink-muted);">Workflow automation · coordination tooling</span>
+                </div>
+            </div>
+            <!-- Non-eng unlock -->
+            <div style="background:var(--sage-light);border-radius:8px;padding:8px 12px;">
+                <span style="font-size:0.75em;font-weight:600;color:var(--ink);">🔓 Non-eng teams</span>
+                <span style="font-size:0.7em;color:var(--ink-muted);margin-left:6px;">Sales · Risk · Accounting · Finance · Recruiting — Snowflake via natural language</span>
+            </div>
+            <!-- FinTechCo mirror -->
+            <div style="font-size:0.62em;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--ink-faint);margin-top:2px;">Mirror for FinTechCo</div>
+            <div style="border:1px solid var(--cream-dark);border-radius:10px;overflow:hidden;">
+                <div style="display:grid;grid-template-columns:1.2fr 1fr 0.8fr;background:var(--ink);padding:5px 12px;">
+                    <span style="font-size:0.62em;font-weight:600;color:var(--cream);letter-spacing:1px;">RAMP RESULT</span>
+                    <span style="font-size:0.62em;font-weight:600;color:var(--cream);letter-spacing:1px;">YOUR TEAM</span>
+                    <span style="font-size:0.62em;font-weight:600;color:var(--cream);letter-spacing:1px;text-align:right;">IMPACT</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1.2fr 1fr 0.8fr;padding:5px 12px;border-bottom:1px solid var(--cream-dark);background:var(--cream-light);">
+                    <span style="font-size:0.7em;color:var(--ink);">1M lines / 30d</span>
+                    <span style="font-size:0.7em;color:var(--ink-muted);">120 SWEs</span>
+                    <span style="font-size:0.7em;font-weight:600;color:var(--coral);text-align:right;">~30% velocity</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1.2fr 1fr 0.8fr;padding:5px 12px;border-bottom:1px solid var(--cream-dark);">
+                    <span style="font-size:0.7em;color:var(--ink);">80% faster triage</span>
+                    <span style="font-size:0.7em;color:var(--ink-muted);">20 SREs</span>
+                    <span style="font-size:0.7em;font-weight:600;color:var(--coral);text-align:right;">~$240K/yr</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1.2fr 1fr 0.8fr;padding:5px 12px;background:var(--cream-light);">
+                    <span style="font-size:0.7em;color:var(--ink);">1–2d saved / model</span>
+                    <span style="font-size:0.7em;color:var(--ink-muted);">40 Data Scientists</span>
+                    <span style="font-size:0.7em;font-weight:600;color:var(--coral);text-align:right;">~$320K/yr</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+<!-- S7: WHY CLAUDE CODE — light competitive positioning -->
+<div class="slide slide-white" data-wm="dark" style="padding:0;">
+    <div style="width:100%;height:100%;padding:48px 56px 40px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;">
+        <div style="width:100%;">
+            <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:6px;">06 · Why Claude Code</div>
+            <h2 style="text-align:left;font-size:2.2em;margin-bottom:0;">Not the only tool. The right one at scale.</h2>
+        </div>
+
+        <!-- Full-width comparison table -->
+        <div style="width:100%;overflow:hidden;">
+            <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;background:var(--ink);border-radius:12px 12px 0 0;">
+                <div style="padding:14px 24px;font-size:0.82em;font-weight:600;color:rgba(255,255,255,.5);">What matters at 180 engineers</div>
+                <div style="padding:14px 12px;text-align:center;font-size:0.92em;font-weight:600;color:rgba(255,255,255,.7);">Copilot</div>
+                <div style="padding:14px 12px;text-align:center;font-size:0.92em;font-weight:600;color:rgba(255,255,255,.7);">Cursor</div>
+                <div style="padding:14px 12px;text-align:center;font-size:0.92em;font-weight:600;color:var(--coral);">Claude Code</div>
+            </div>
+            <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;">
+                <div style="padding:14px 24px;font-size:0.95em;color:var(--ink);">Agentic multi-step execution</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;color:var(--cream-dark);">✗</div>
+                <div style="padding:14px 12px;text-align:center;font-size:0.85em;color:var(--ink-faint);">Partial</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;font-weight:600;color:var(--green);">✓</div>
+            </div>
+            <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;">
+                <div style="padding:14px 24px;font-size:0.95em;color:var(--ink);">Terminal + CI/CD native</div>
+                <div style="padding:14px 12px;text-align:center;font-size:0.85em;color:var(--ink-faint);">GH only</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;color:var(--cream-dark);">✗</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;font-weight:600;color:var(--green);">✓</div>
+            </div>
+            <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;">
+                <div style="padding:14px 24px;font-size:0.95em;color:var(--ink);">MCP integrations (1,900+)</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;color:var(--cream-dark);">✗</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;font-weight:600;color:var(--green);">✓</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;font-weight:600;color:var(--green);">✓</div>
+            </div>
+            <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;">
+                <div style="padding:14px 24px;font-size:0.95em;color:var(--ink);">Managed settings (MDM)</div>
+                <div style="padding:14px 12px;text-align:center;font-size:0.85em;color:var(--ink-faint);">Partial</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;color:var(--cream-dark);">✗</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;font-weight:600;color:var(--green);">✓</div>
+            </div>
+            <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;">
+                <div style="padding:14px 24px;font-size:0.95em;color:var(--ink);">Per-user spend caps</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;color:var(--cream-dark);">✗</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;color:var(--cream-dark);">✗</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;font-weight:600;color:var(--green);">✓</div>
+            </div>
+            <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;border-radius:0 0 12px 12px;">
+                <div style="padding:14px 24px;font-size:0.95em;color:var(--ink);">Your VPC (Bedrock + Vertex)</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;color:var(--cream-dark);">✗</div>
+                <div style="padding:14px 12px;text-align:center;font-size:1.1em;color:var(--cream-dark);">✗</div>
+                <div style="padding:14px 12px;text-align:center;font-size:0.95em;font-weight:600;color:var(--green);">✓ Both</div>
+            </div>
+        </div>
+
+        <!-- Honest positioning -->
+        <div style="width:100%;display:flex;gap:12px;">
+            <div style="flex:1;background:rgba(74,98,116,0.06);border:1px solid rgba(74,98,116,0.15);border-radius:10px;padding:14px 20px;">
+                <div style="font-size:0.88em;color:var(--blue-deep);line-height:1.55;"><strong>Honest take:</strong> Copilot has the widest distribution. Cursor has the best inline editing. Neither ships managed settings, spend caps, or terminal execution — the things that matter at 180 engineers in a regulated environment.</div>
+            </div>
+            <div style="background:rgba(217,119,87,0.06);border:1px solid rgba(217,119,87,0.15);border-radius:10px;padding:14px 18px;display:flex;align-items:center;">
+                <div style="font-size:0.8em;color:var(--coral);line-height:1.5;">Full 5-tool matrix<br>in the appendix</div>
+            </div>
+        </div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- S6: ROLLOUT PLAN — not "pilot", phased rollout           -->
+<!-- ~5 min talk time                                         -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="slide slide-cover" data-wm="light" style="padding:0;">
+    <div style="width:100%;height:100%;padding:44px 56px;display:flex;flex-direction:column;justify-content:center;gap:24px;">
+        <div style="display:grid;grid-template-columns:0.35fr 0.65fr;gap:48px;align-items:center;">
+            <!-- Left: headline + KPIs -->
+            <div style="display:flex;flex-direction:column;gap:20px;">
+                <div>
+                    <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:rgba(255,255,255,.45);margin-bottom:12px;">07 · Rollout Plan</div>
+                    <div style="font-family:'Source Serif 4',Georgia,serif;font-size:clamp(32px,5vw,52px);font-weight:700;color:var(--white);line-height:1.1;">15 engineers<br>to 180.<br>In 10 weeks.</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                    <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:14px 8px;text-align:center;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.5em;font-weight:700;color:var(--white);">$1,032K</div><div style="font-size:0.62em;color:rgba(255,255,255,.45);">productivity gains</div></div>
+                    <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:14px 8px;text-align:center;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.5em;font-weight:700;color:var(--white);">3.2×</div><div style="font-size:0.62em;color:rgba(255,255,255,.45);">ROI</div></div>
+                    <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:14px 8px;text-align:center;"><div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.5em;font-weight:700;color:var(--white);">3.8 mo</div><div style="font-size:0.62em;color:rgba(255,255,255,.45);">payback</div></div>
+                </div>
+                <div style="font-size:0.78em;color:rgba(255,255,255,.4);line-height:1.55;">Phased rollout with a data gate at week 4.<br>If the numbers don't hold, you've spent $2,550.</div>
+            </div>
+            <!-- Right: vertical dot timeline — rollout language -->
+            <div style="position:relative;padding-left:36px;display:flex;flex-direction:column;justify-content:center;">
+                <div style="position:absolute;left:49px;top:0;bottom:0;width:2px;background:rgba(255,255,255,.15);"></div>
+                <div style="display:flex;flex-direction:column;gap:40px;">
+                    <!-- 1 -->
+                    <div style="display:flex;align-items:flex-start;gap:16px;">
+                        <div style="width:28px;height:28px;border-radius:50%;background:var(--coral);display:flex;align-items:center;justify-content:center;font-size:0.68em;font-weight:700;color:var(--white);flex-shrink:0;z-index:1;">1</div>
+                        <div>
+                            <div style="font-size:0.92em;font-weight:600;color:var(--white);">This week · Security & governance</div>
+                            <div style="font-size:0.72em;color:rgba(255,255,255,.5);line-height:1.5;">Security review · MDM config · SSO setup · governance docs sent today</div>
+                        </div>
+                    </div>
+                    <!-- 2 -->
+                    <div style="display:flex;align-items:flex-start;gap:16px;">
+                        <div style="width:28px;height:28px;border-radius:50%;background:var(--coral);display:flex;align-items:center;justify-content:center;font-size:0.68em;font-weight:700;color:var(--white);flex-shrink:0;z-index:1;">2</div>
+                        <div>
+                            <div style="font-size:0.92em;font-weight:600;color:var(--white);">Week 1 · First wave — 15 engineers</div>
+                            <div style="font-size:0.72em;color:rgba(255,255,255,.5);line-height:1.5;">8 SWE + 4 DS + 3 SRE · all three teams from day one · $2,550/mo</div>
+                        </div>
+                    </div>
+                    <!-- 3 — gate -->
+                    <div style="display:flex;align-items:flex-start;gap:16px;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:var(--white);border:2px solid var(--coral);display:flex;align-items:center;justify-content:center;font-size:0.72em;font-weight:700;color:var(--coral);flex-shrink:0;z-index:1;margin-left:-2px;">3</div>
+                        <div>
+                            <div style="font-size:0.92em;font-weight:700;color:var(--white);">Week 4 · <span style="color:var(--coral);background:rgba(255,255,255,.15);padding:1px 8px;border-radius:4px;">Data gate</span></div>
+                            <div style="font-size:0.72em;color:rgba(255,255,255,.5);line-height:1.5;">PR cycle time · test coverage · defect rate — before/after</div>
+                            <div style="font-size:0.72em;font-weight:600;color:rgba(255,255,255,.7);">Go/no-go based on your own metrics</div>
+                        </div>
+                    </div>
+                    <!-- 4 -->
+                    <div style="display:flex;align-items:flex-start;gap:16px;">
+                        <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:0.68em;font-weight:700;color:var(--white);flex-shrink:0;z-index:1;">4</div>
+                        <div>
+                            <div style="font-size:0.92em;font-weight:600;color:var(--white);">Week 5–10 · Company-wide rollout</div>
+                            <div style="font-size:0.72em;color:rgba(255,255,255,.5);line-height:1.5;">180 engineers · Enterprise plan · spend caps · CLAUDE.md per repo · $30.6K/mo</div>
+                        </div>
+                    </div>
+                    <!-- 5 -->
+                    <div style="display:flex;align-items:flex-start;gap:16px;">
+                        <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:0.68em;font-weight:700;color:var(--white);flex-shrink:0;z-index:1;">5</div>
+                        <div>
+                            <div style="font-size:0.92em;font-weight:600;color:var(--white);">Week 14 · Board-ready ROI report</div>
+                            <div style="font-size:0.72em;color:rgba(255,255,255,.5);line-height:1.5;">Full impact data · MCP custom servers · CI/CD integration complete</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:flex-end;">
+            <span style="font-size:10px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.35);">CONFIDENTIAL</span>
+        </div>
+    </div>
+</div>
+
+<!-- S9: CLOSING / Q&A -->
+<div class="slide slide-cream" data-wm="dark" style="padding:0;">
+    <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px 56px 40px;text-align:center;">
+        <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:12px;">Thank You</div>
+        <h2 style="font-size:2.6em;margin-bottom:8px;">Questions?</h2>
+        <p style="font-size:1em;font-weight:300;color:var(--ink-muted);max-width:600px;line-height:1.6;margin-bottom:32px;">Happy to dig into security, architecture, pricing, or anything else on your mind.</p>
+
+        <!-- Recap: 3 next steps -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:780px;width:100%;margin-bottom:28px;">
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:20px 18px;text-align:center;">
+                <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.8em;font-weight:700;color:var(--coral);margin-bottom:4px;">1</div>
+                <div style="font-size:0.88em;font-weight:600;color:var(--ink);margin-bottom:2px;">This week</div>
+                <div style="font-size:0.75em;color:var(--ink-muted);line-height:1.5;">Security review &<br>governance docs</div>
+            </div>
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:20px 18px;text-align:center;">
+                <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.8em;font-weight:700;color:var(--coral);margin-bottom:4px;">2</div>
+                <div style="font-size:0.88em;font-weight:600;color:var(--ink);margin-bottom:2px;">Week 1</div>
+                <div style="font-size:0.75em;color:var(--ink-muted);line-height:1.5;">15 engineers live<br>across all 3 teams</div>
+            </div>
+            <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:20px 18px;text-align:center;">
+                <div style="font-family:'Source Serif 4',Georgia,serif;font-size:1.8em;font-weight:700;color:var(--coral);margin-bottom:4px;">3</div>
+                <div style="font-size:0.88em;font-weight:600;color:var(--ink);margin-bottom:2px;">Week 4</div>
+                <div style="font-size:0.75em;color:var(--ink-muted);line-height:1.5;">Data gate —<br>go/no-go on your metrics</div>
+            </div>
+        </div>
+
+        <div style="font-size:0.82em;color:var(--ink-muted);line-height:1.6;">charlotte@anthropic.com · claude.com/solutions/financial-services</div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+<!-- ═══════ RESERVE SLIDES ═══════ -->
+
+<!-- R1: Architecture -->
+<div class="slide slide-white" data-wm="dark" data-reserve="true" style="padding:0;">
+    <div class="reserve-badge">IF ASKED · Architecture</div>
+    <div style="width:100%;height:100%;padding:44px 44px 28px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="margin-bottom:4px;">
+            <div style="font-size:0.65em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:2px;">Architecture</div>
+            <h2 style="text-align:left;font-size:1.4em;margin-bottom:0;">How Claude Code integrates with FinTechCo's stack</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 54px 1.35fr;gap:0 10px;margin-bottom:2px;">
+            <div style="font-size:0.54em;font-weight:700;letter-spacing:2px;color:var(--ink-faint);padding-left:4px;">YOUR STACK · UNCHANGED</div>
+            <div></div>
+            <div style="font-size:0.54em;font-weight:700;letter-spacing:2px;color:var(--coral);padding-left:4px;">CLAUDE CODE · WHAT'S ADDED</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 54px 1.35fr;grid-template-rows:repeat(6,auto) auto;gap:6px 10px;align-items:center;">
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:6px;padding:5px 10px;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:6px;"><span style="font-size:0.55em;font-weight:700;letter-spacing:1px;color:var(--coral);">PLAN</span><span style="font-size:0.78em;font-weight:600;color:var(--ink);">Notion</span><span style="font-size:0.6em;color:var(--ink-faint);">tickets</span></div>
+            <div style="text-align:center;"><span style="font-size:0.55em;font-weight:700;color:var(--coral);background:rgba(217,119,87,.1);border:1px solid rgba(217,119,87,.2);border-radius:4px;padding:2px 5px;">MCP ↔</span></div>
+            <div style="background:rgba(217,119,87,0.04);border:1px solid rgba(217,119,87,0.15);border-radius:6px;padding:5px 10px;"><div style="font-size:0.78em;font-weight:600;color:var(--ink);">Notion MCP Server</div><div style="font-size:0.6em;color:var(--ink-muted);">Read tickets → plan work → update status</div></div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:6px;padding:5px 10px;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:6px;"><span style="font-size:0.55em;font-weight:700;letter-spacing:1px;color:var(--coral);">CODE</span><span style="font-size:0.78em;font-weight:600;color:var(--ink);">VS Code</span><span style="font-size:0.6em;color:var(--ink-faint);">IDE</span></div>
+            <div style="text-align:center;"><span style="font-size:0.55em;font-weight:700;color:var(--coral);background:rgba(217,119,87,.1);border:1px solid rgba(217,119,87,.2);border-radius:4px;padding:2px 5px;">EXT ↔</span></div>
+            <div style="background:rgba(217,119,87,0.04);border:1px solid rgba(217,119,87,0.15);border-radius:6px;padding:5px 10px;"><div style="font-size:0.78em;font-weight:600;color:var(--ink);">VS Code Ext + Terminal + Web + Slack</div><div style="font-size:0.6em;color:var(--ink-muted);">Same Claude, same governance, multiple surfaces</div></div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:6px;padding:5px 10px;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:6px;"><span style="font-size:0.55em;font-weight:700;letter-spacing:1px;color:var(--coral);">VCS</span><span style="font-size:0.78em;font-weight:600;color:var(--ink);">GitHub</span><span style="font-size:0.6em;color:var(--ink-faint);">PRs · CI</span></div>
+            <div style="text-align:center;"><span style="font-size:0.55em;font-weight:700;color:var(--coral);background:rgba(217,119,87,.1);border:1px solid rgba(217,119,87,.2);border-radius:4px;padding:2px 5px;">MCP ↔</span></div>
+            <div style="background:rgba(217,119,87,0.04);border:1px solid rgba(217,119,87,0.15);border-radius:6px;padding:5px 10px;"><div style="display:flex;align-items:center;gap:4px;"><span style="font-size:0.78em;font-weight:600;color:var(--ink);">GitHub MCP</span><span style="font-size:0.52em;font-weight:600;color:var(--green);background:rgba(90,122,79,.08);padding:1px 4px;border-radius:3px;">+ CODE REVIEW</span></div><div style="font-size:0.6em;color:var(--ink-muted);">Issues → PRs → automated review · 3h → 2.4h</div></div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:6px;padding:5px 10px;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:6px;"><span style="font-size:0.55em;font-weight:700;letter-spacing:1px;color:var(--coral);">QUAL</span><span style="font-size:0.78em;font-weight:600;color:var(--ink);">SonarQube</span><span style="font-size:0.6em;color:var(--ink-faint);">SAST</span></div>
+            <div style="text-align:center;"><span style="font-size:0.55em;font-weight:700;color:var(--green);background:rgba(90,122,79,.1);border:1px solid rgba(90,122,79,.2);border-radius:4px;padding:2px 5px;">+ADD →</span></div>
+            <div style="background:rgba(90,122,79,0.04);border:1px solid rgba(90,122,79,0.15);border-radius:6px;padding:5px 10px;"><div style="display:flex;align-items:center;gap:4px;"><span style="font-size:0.78em;font-weight:600;color:var(--ink);">CC Security</span><span style="font-size:0.52em;font-weight:600;color:var(--green);background:rgba(90,122,79,.08);padding:1px 4px;border-radius:3px;">NEW</span></div><div style="font-size:0.6em;color:var(--ink-muted);">Reasoning-based scanning · business logic flaws</div></div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:6px;padding:5px 10px;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:6px;"><span style="font-size:0.55em;font-weight:700;letter-spacing:1px;color:var(--coral);">ORCH</span><span style="font-size:0.78em;font-weight:600;color:var(--ink);">Airflow</span><span style="font-size:0.6em;color:var(--ink-faint);">pipelines</span></div>
+            <div style="text-align:center;"><span style="font-size:0.55em;font-weight:700;color:var(--coral);background:rgba(217,119,87,.1);border:1px solid rgba(217,119,87,.2);border-radius:4px;padding:2px 5px;">MCP ↔</span></div>
+            <div style="background:rgba(217,119,87,0.04);border:1px solid rgba(217,119,87,0.15);border-radius:6px;padding:5px 10px;"><div style="font-size:0.78em;font-weight:600;color:var(--ink);">Airflow MCP Server</div><div style="font-size:0.6em;color:var(--ink-muted);">Generate DAGs → debug → monitor · 70% faster</div></div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:6px;padding:5px 10px;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:6px;"><span style="font-size:0.55em;font-weight:700;letter-spacing:1px;color:var(--coral);">INFRA</span><span style="font-size:0.78em;font-weight:600;color:var(--ink);">AWS+GCP</span><span style="font-size:0.6em;color:var(--ink-faint);">cloud</span></div>
+            <div style="text-align:center;"><span style="font-size:0.55em;font-weight:700;color:var(--blue-deep);background:rgba(74,98,116,.1);border:1px solid rgba(74,98,116,.2);border-radius:4px;padding:2px 5px;">API ↔</span></div>
+            <div style="background:rgba(74,98,116,0.04);border:1px solid rgba(74,98,116,0.15);border-radius:6px;padding:5px 10px;"><div style="display:flex;align-items:center;gap:4px;"><span style="font-size:0.78em;font-weight:600;color:var(--ink);">Bedrock + Vertex AI</span><span style="font-size:0.52em;font-weight:600;color:var(--blue-deep);background:rgba(74,98,116,.08);padding:1px 4px;border-radius:3px;">DIRECT</span></div><div style="font-size:0.6em;color:var(--ink-muted);">No intermediary · both clouds · same models</div></div>
+            <div style="grid-column:1 / -1;background:var(--ink);border-radius:6px;padding:6px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <span style="font-size:0.72em;font-weight:600;color:var(--white);">Enterprise Governance</span>
+                <span style="font-size:0.5em;font-weight:600;color:var(--coral);background:rgba(217,119,87,.2);padding:1px 5px;border-radius:3px;">MANAGED</span>
+                <span style="font-size:0.56em;color:rgba(255,255,255,.45);">MDM settings · SCIM · SSO · Spend caps · MCP allowlist · PCI deny rules · Audit logs · CLAUDE.md · Human-in-the-loop</span>
+            </div>
+        </div>
+        <div style="display:flex;gap:14px;margin-top:4px;justify-content:center;">
+            <div style="display:flex;align-items:center;gap:3px;"><span style="font-size:0.5em;font-weight:700;color:var(--coral);background:rgba(217,119,87,.1);padding:2px 5px;border-radius:3px;">MCP ↔</span><span style="font-size:0.56em;color:var(--ink-faint);">Bi-directional via Model Context Protocol</span></div>
+            <div style="display:flex;align-items:center;gap:3px;"><span style="font-size:0.5em;font-weight:700;color:var(--green);background:rgba(90,122,79,.1);padding:2px 5px;border-radius:3px;">+ADD →</span><span style="font-size:0.56em;color:var(--ink-faint);">New capability (doesn't replace)</span></div>
+            <div style="display:flex;align-items:center;gap:3px;"><span style="font-size:0.5em;font-weight:700;color:var(--blue-deep);background:rgba(74,98,116,.1);padding:2px 5px;border-radius:3px;">API ↔</span><span style="font-size:0.56em;color:var(--ink-faint);">Direct API — no intermediary</span></div>
+        </div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+<!-- R2: Security -->
+<div class="slide slide-white" data-wm="dark" data-reserve="true" style="padding:0;">
+    <div class="reserve-badge">IF ASKED · Security</div>
+    <div style="width:100%;height:100%;display:grid;grid-template-columns:1fr 1fr;padding:44px 52px 36px;align-items:center;">
+        <!-- Left: Infrastructure & Data -->
+        <div style="display:flex;flex-direction:column;gap:8px;padding-right:32px;border-right:1px solid var(--cream-dark);">
+            <div>
+                <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:4px;">Security & Compliance</div>
+                <h2 style="text-align:left;font-size:1.7em;margin-bottom:0;">Built for regulated<br>environments</h2>
+            </div>
+            <div style="font-size:0.62em;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--ink-faint);">Data & Infrastructure</div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:12px;padding:12px 16px;">
+                <div style="font-size:0.82em;font-weight:600;color:var(--ink);margin-bottom:4px;">🔒 No intermediary servers</div>
+                <div style="font-size:0.72em;color:var(--ink-muted);line-height:1.6;">Code goes directly to Claude API via AWS Bedrock or GCP Vertex AI. No third-party server sees your payment code. Unlike Cursor or Windsurf, there is no code index stored on intermediary infrastructure.</div>
+            </div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:12px;padding:12px 16px;">
+                <div style="font-size:0.82em;font-weight:600;color:var(--ink);margin-bottom:4px;">🚫 Zero training on your data</div>
+                <div style="font-size:0.72em;color:var(--ink-muted);line-height:1.6;">Enterprise default — not an opt-out, an opt-in that no enterprise customer has activated. Custom data retention policies. Zero-Data-Retention (ZDR) mode available for PHI/sensitive data.</div>
+            </div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:12px;padding:12px 16px;">
+                <div style="font-size:0.82em;font-weight:600;color:var(--ink);margin-bottom:4px;">🇺🇸 US-only inference</div>
+                <div style="font-size:0.72em;color:var(--ink-muted);line-height:1.6;">Data never leaves US infrastructure. AES-256 at rest, TLS 1.2+ in transit. KMS-backed provider-managed keys on AWS and GCP. BYOK support available — contact your account team for enablement.</div>
+            </div>
+            <div style="font-size:0.62em;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--ink-faint);">Certifications</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+                <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:0.82em;font-weight:700;color:var(--coral);">SOC 2</div><div style="font-size:0.62em;color:var(--ink-muted);">Type II audited</div></div>
+                <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:0.82em;font-weight:700;color:var(--coral);">ISO 27001</div><div style="font-size:0.62em;color:var(--ink-muted);">encryption std</div></div>
+                <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:0.82em;font-weight:700;color:var(--coral);">HIPAA</div><div style="font-size:0.62em;color:var(--ink-muted);">ZDR eligible</div></div>
+            </div>
+        </div>
+        <!-- Right: Governance & Controls -->
+        <div style="display:flex;flex-direction:column;gap:8px;padding-left:32px;">
+            <div style="font-size:0.62em;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--ink-faint);">Enterprise Governance Controls</div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:12px;padding:12px 16px;">
+                <div style="font-size:0.82em;font-weight:600;color:var(--ink);margin-bottom:4px;">🏢 Managed Settings (MDM)</div>
+                <div style="font-size:0.72em;color:var(--ink-muted);line-height:1.6;">JSON config deployed via Jamf, Kandji, or Intune. Tamper-resistant at OS level. Engineers cannot override. Controls:</div>
+                <div style="font-size:0.68em;color:var(--ink);line-height:1.8;margin-top:4px;padding-left:8px;">· Approved models (Sonnet default, Opus opt-in)<br>· MCP server allowlist (no shadow connections)<br>· PCI-scope directory deny rules<br>· Per-user & per-team spend caps<br>· Network egress restrictions</div>
+            </div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:12px;padding:12px 16px;">
+                <div style="font-size:0.82em;font-weight:600;color:var(--ink);margin-bottom:4px;">👁 Identity & Audit</div>
+                <div style="font-size:0.72em;color:var(--ink-muted);line-height:1.6;">SAML 2.0 / OIDC SSO (Okta, Azure AD, Ping). SCIM provisioning. Domain capture — company email auto-routes to enterprise workspace. Audit logs exportable to Splunk, Datadog, Elastic. Compliance API for every action.</div>
+            </div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:12px;padding:12px 16px;">
+                <div style="font-size:0.82em;font-weight:600;color:var(--ink);margin-bottom:4px;">🛡 Runtime Security</div>
+                <div style="font-size:0.72em;color:var(--ink-muted);line-height:1.6;">Human-in-the-loop by default — every file change, command, and network request requires approval. Command injection detection. Suspicious bash commands blocked even if previously allowlisted. Fail-closed matching: unrecognized commands default to manual approval.</div>
+            </div>
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:12px;padding:12px 16px;">
+                <div style="font-size:0.82em;font-weight:600;color:var(--ink);margin-bottom:4px;">🤖 Claude Code Security</div>
+                <div style="font-size:0.72em;color:var(--ink-muted);line-height:1.6;">Reasoning-based vulnerability scanning. Traces data flows across codebase to catch business logic flaws (broken access control, authorization bypasses) that pattern-matching SAST tools miss. Complements SonarQube — doesn't replace it.</div>
+            </div>
+            <!-- Implementation timeline -->
+            <div style="background:var(--coral);border-radius:10px;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:0.75em;font-weight:600;color:var(--white);">Time to secure deployment</span>
+                <span style="font-size:0.75em;color:rgba(255,255,255,.7);">SSO: 2–4 hrs · MDM settings: 1 day · Full governance: 1 week</span>
+            </div>
+        </div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+<!-- R3: Competitive — Market Landscape -->
+<div class="slide slide-white" data-wm="dark" data-reserve="true" style="padding:0;">
+    <div class="reserve-badge">IF ASKED · Competitive landscape</div>
+    <div style="width:100%;height:100%;display:grid;grid-template-columns:1fr 1.2fr;padding:48px 56px 40px;align-items:center;">
+        <!-- Left: three paradigms -->
+        <div style="display:flex;flex-direction:column;gap:12px;padding-right:36px;border-right:1px solid var(--cream-dark);">
+            <div>
+                <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:6px;">"Isn't this just Cursor?"</div>
+                <h2 style="text-align:left;font-size:1.8em;margin-bottom:4px;">Three paradigms,<br>not three competitors</h2>
+                <p style="font-size:0.82em;color:var(--ink-muted);line-height:1.55;">The 2026 market has consolidated around three design philosophies. Claude Code is the only one that covers all three.</p>
+            </div>
+            <!-- Autocomplete -->
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:14px;padding:14px 18px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:0.6em;font-weight:700;letter-spacing:1.5px;color:var(--white);background:var(--ink-faint);padding:2px 8px;border-radius:4px;">AUTOCOMPLETE</span><span style="font-size:0.85em;font-weight:600;color:var(--ink);">GitHub Copilot</span></div>
+                <div style="font-size:0.78em;color:var(--ink-muted);line-height:1.55;">Reactive inline suggestions. Works in any IDE. Best distribution (82% enterprise adoption). But limited context — open files only, no full codebase awareness.</div>
+                <div style="font-size:0.72em;color:var(--ink-faint);margin-top:4px;">$10–$39/seat · OpenAI models · Microsoft/GitHub ecosystem</div>
+            </div>
+            <!-- AI IDE -->
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:14px;padding:14px 18px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:0.6em;font-weight:700;letter-spacing:1.5px;color:var(--white);background:var(--blue-deep);padding:2px 8px;border-radius:4px;">AI-NATIVE IDE</span><span style="font-size:0.85em;font-weight:600;color:var(--ink);">Cursor · Windsurf</span></div>
+                <div style="font-size:0.78em;color:var(--ink-muted);line-height:1.55;">VS Code forks with AI woven into editing. Composer mode for multi-file edits. Strong for greenfield. But: code sent to intermediary servers, no terminal/CI execution, limited enterprise controls.</div>
+                <div style="font-size:0.72em;color:var(--ink-faint);margin-top:4px;">Cursor $20–$200/mo · Windsurf $15–$60/mo · Multi-model</div>
+            </div>
+            <!-- Agentic terminal -->
+            <div style="background:rgba(217,119,87,0.08);border:1px solid rgba(217,119,87,0.2);border-radius:14px;padding:14px 18px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:0.6em;font-weight:700;letter-spacing:1.5px;color:var(--white);background:var(--coral);padding:2px 8px;border-radius:4px;">AGENTIC AGENT</span><span style="font-size:0.85em;font-weight:600;color:var(--ink);">Claude Code</span></div>
+                <div style="font-size:0.78em;color:var(--ink);line-height:1.55;">Reads entire codebase, plans autonomously, executes in your terminal, IDE, web, Slack, and mobile. Direct API — no intermediary. Enterprise governance from day one.</div>
+                <div style="font-size:0.72em;color:var(--coral);font-weight:500;margin-top:4px;">$20–$200/mo · 80.9% SWE-bench · 46% "most loved" in 2026 developer survey</div>
+            </div>
+        </div>
+        <!-- Right: wider landscape + positioning -->
+        <div style="display:flex;flex-direction:column;gap:12px;padding-left:36px;">
+            <div style="font-size:0.68em;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--ink-faint);">Also in the market</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:10px;padding:10px 14px;display:flex;gap:12px;align-items:center;">
+                    <div style="min-width:90px;"><div style="font-size:0.85em;font-weight:600;color:var(--ink);">Gemini CLI</div><div style="font-size:0.68em;color:var(--ink-faint);">Google</div></div>
+                    <div style="font-size:0.75em;color:var(--ink-muted);line-height:1.4;">Free tier (1K req/day). 1M token context. Strong on cost but inconsistent quality. No enterprise controls. Stability issues reported.</div>
+                </div>
+                <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:10px;padding:10px 14px;display:flex;gap:12px;align-items:center;">
+                    <div style="min-width:90px;"><div style="font-size:0.85em;font-weight:600;color:var(--ink);">OpenAI Codex</div><div style="font-size:0.68em;color:var(--ink-faint);">OpenAI</div></div>
+                    <div style="font-size:0.75em;color:var(--ink-muted);line-height:1.4;">Open-source CLI. Lightweight. Requires ChatGPT subscription. No enterprise governance, no managed settings, no cloud provider integration.</div>
+                </div>
+                <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:10px;padding:10px 14px;display:flex;gap:12px;align-items:center;">
+                    <div style="min-width:90px;"><div style="font-size:0.85em;font-weight:600;color:var(--ink);">Cline</div><div style="font-size:0.68em;color:var(--ink-faint);">Open source</div></div>
+                    <div style="font-size:0.75em;color:var(--ink-muted);line-height:1.4;">5M VS Code installs. BYOK (bring your own key). Great for privacy-conscious devs. But: no enterprise tier, no centralized management, no audit logs.</div>
+                </div>
+                <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:10px;padding:10px 14px;display:flex;gap:12px;align-items:center;">
+                    <div style="min-width:90px;"><div style="font-size:0.85em;font-weight:600;color:var(--ink);">Amazon Q</div><div style="font-size:0.68em;color:var(--ink-faint);">AWS</div></div>
+                    <div style="font-size:0.75em;color:var(--ink-muted);line-height:1.4;">Deep AWS integration. 50% code acceptance (NAB). Free tier + $19/user. But: strong within AWS ecosystem only, generic outside it.</div>
+                </div>
+            </div>
+            <!-- Key insight -->
+            <div style="font-size:0.68em;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--ink-faint);margin-top:6px;">The real pattern</div>
+            <div style="background:var(--coral);border-radius:14px;padding:16px 20px;">
+                <div style="font-size:0.88em;font-weight:600;color:var(--white);margin-bottom:4px;">Most developers use 2–3 tools (2.3 avg)</div>
+                <div style="font-size:0.78em;color:rgba(255,255,255,.6);line-height:1.55;">The common stack: Copilot for daily autocomplete + Claude Code for complex reasoning. This isn't an either/or decision. Claude Code layers on top — it replaces nothing in your existing stack.</div>
+            </div>
+            <div style="background:rgba(217,119,87,0.06);border:1px solid rgba(217,119,87,0.15);border-radius:14px;padding:14px 18px;">
+                <div style="font-size:0.82em;font-weight:600;color:var(--ink);margin-bottom:4px;">Why Claude Code wins for FinTechCo specifically</div>
+                <div style="font-size:0.75em;color:var(--ink-muted);line-height:1.55;">Only Claude Code gives you: direct API (no intermediary for payment code) + AWS Bedrock & GCP Vertex (both your clouds) + managed enterprise settings via MDM + reasoning-based security scanning that complements SonarQube. No other tool checks all four boxes.</div>
+            </div>
+        </div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+<!-- R4: Competitive — Deep comparison table -->
+<div class="slide slide-cream" data-wm="dark" data-reserve="true">
+    <div class="reserve-badge">IF ASKED · Feature comparison</div>
+    <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:6px;">Detailed Comparison</div>
+    <h2 style="font-size:1.6em;margin-bottom:12px;">Enterprise feature matrix</h2>
+    <div style="display:flex;flex-direction:column;gap:0;width:100%;max-width:1100px;justify-content:center;">
+        <!-- Header -->
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--ink);border-radius:12px 12px 0 0;">
+            <div style="padding:10px 16px;"></div>
+            <div style="padding:10px 8px;font-size:0.7em;font-weight:500;color:rgba(255,255,255,.5);text-align:center;">Copilot</div>
+            <div style="padding:10px 8px;font-size:0.7em;font-weight:500;color:rgba(255,255,255,.5);text-align:center;">Cursor</div>
+            <div style="padding:10px 8px;font-size:0.7em;font-weight:500;color:rgba(255,255,255,.5);text-align:center;">Windsurf</div>
+            <div style="padding:10px 8px;font-size:0.7em;font-weight:500;color:rgba(255,255,255,.5);text-align:center;">Gemini CLI</div>
+            <div style="padding:10px 8px;font-size:0.7em;font-weight:600;color:var(--coral);text-align:center;">Claude Code</div>
+        </div>
+        <!-- Category: Intelligence -->
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:rgba(217,119,87,0.06);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:6px 16px;font-size:0.68em;font-weight:700;letter-spacing:1px;color:var(--coral);" colspan="6">INTELLIGENCE</div><div></div><div></div><div></div><div></div><div></div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">SWE-bench Verified</div><div style="padding:7px 8px;text-align:center;font-size:0.75em;color:var(--ink-muted);">—</div><div style="padding:7px 8px;text-align:center;font-size:0.75em;color:var(--ink-muted);">varies</div><div style="padding:7px 8px;text-align:center;font-size:0.75em;color:var(--ink-muted);">—</div><div style="padding:7px 8px;text-align:center;font-size:0.75em;color:var(--ink-muted);">76.2%</div><div style="padding:7px 8px;text-align:center;font-size:0.78em;font-weight:600;color:var(--coral);">80.9%</div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">Full codebase awareness</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">Agentic multi-step execution</div><div style="padding:7px 8px;text-align:center;font-size:0.7em;color:var(--ink-faint);">Basic</div><div style="padding:7px 8px;text-align:center;font-size:0.7em;color:var(--ink-faint);">Partial</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;font-size:0.7em;color:var(--ink-faint);">Basic</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">Context window</div><div style="padding:7px 8px;text-align:center;font-size:0.72em;color:var(--ink-muted);">8K</div><div style="padding:7px 8px;text-align:center;font-size:0.72em;color:var(--ink-muted);">varies</div><div style="padding:7px 8px;text-align:center;font-size:0.72em;color:var(--ink-muted);">128K</div><div style="padding:7px 8px;text-align:center;font-size:0.72em;color:var(--ink-muted);">1M</div><div style="padding:7px 8px;text-align:center;font-size:0.72em;font-weight:600;color:var(--coral);">200K+</div></div>
+        <!-- Category: Deployment -->
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:rgba(217,119,87,0.06);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:6px 16px;font-size:0.68em;font-weight:700;letter-spacing:1px;color:var(--coral);">DEPLOYMENT & SURFACES</div><div></div><div></div><div></div><div></div><div></div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">Terminal / CLI native</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">VS Code / JetBrains</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">CI/CD · GitHub Actions</div><div style="padding:7px 8px;text-align:center;font-size:0.7em;color:var(--ink-faint);">GH only</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">Web · Slack · Mobile</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div></div>
+        <!-- Category: Enterprise -->
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:rgba(217,119,87,0.06);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:6px 16px;font-size:0.68em;font-weight:700;letter-spacing:1px;color:var(--coral);">ENTERPRISE & SECURITY</div><div></div><div></div><div></div><div></div><div></div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">No code to intermediary servers</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">AWS Bedrock + GCP Vertex AI</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-size:0.7em;color:var(--ink-faint);">Vertex</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓ Both</div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">Managed settings (MDM)</div><div style="padding:7px 8px;text-align:center;font-size:0.7em;color:var(--ink-faint);">Partial</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">SCIM · SSO · Audit logs</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-size:0.7em;color:var(--ink-faint);">Partial</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">MCP protocol support</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div></div>
+        <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr 1.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;border-radius:0 0 12px 12px;"><div style="padding:7px 16px;font-size:0.78em;color:var(--ink);">Per-user spend caps</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;color:var(--cream-dark);">✗</div><div style="padding:7px 8px;text-align:center;font-weight:600;color:var(--green);">✓</div></div>
+    </div>
+    <!-- Bottom: pricing -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:1100px;margin-top:12px;">
+        <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:8px 10px;text-align:center;"><div style="font-size:0.82em;font-weight:600;color:var(--ink);">Copilot</div><div style="font-size:0.72em;color:var(--ink-muted);">$10–$39/seat</div></div>
+        <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:8px 10px;text-align:center;"><div style="font-size:0.82em;font-weight:600;color:var(--ink);">Cursor</div><div style="font-size:0.72em;color:var(--ink-muted);">$20–$200/mo</div></div>
+        <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:8px 10px;text-align:center;"><div style="font-size:0.82em;font-weight:600;color:var(--ink);">Windsurf</div><div style="font-size:0.72em;color:var(--ink-muted);">$15–$60/mo</div></div>
+        <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:10px;padding:8px 10px;text-align:center;"><div style="font-size:0.82em;font-weight:600;color:var(--ink);">Gemini CLI</div><div style="font-size:0.72em;color:var(--ink-muted);">Free–Vertex</div></div>
+        <div style="background:rgba(217,119,87,0.08);border:1px solid rgba(217,119,87,0.2);border-radius:10px;padding:8px 10px;text-align:center;"><div style="font-size:0.82em;font-weight:600;color:var(--coral);">Claude Code</div><div style="font-size:0.72em;color:var(--ink-muted);">$20–$200/mo</div></div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+<!-- R5: BVA Appendix — Detailed Productivity Calculation -->
+<div class="slide slide-white" data-wm="dark" data-reserve="true" style="padding:0;">
+    <div class="reserve-badge">IF ASKED · BVA Detail</div>
+    <div style="width:100%;height:100%;padding:40px 44px 36px;display:grid;grid-template-columns:1.55fr 0.45fr;gap:24px;align-items:center;">
+        <!-- Left: calculation tables -->
+        <div style="display:flex;flex-direction:column;gap:6px;overflow:hidden;">
+            <div>
+                <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:4px;">BVA Appendix</div>
+                <h2 style="text-align:left;font-size:1.5em;margin-bottom:0;">Productivity savings · bottoms-up</h2>
+            </div>
+            <!-- SWE Table -->
+            <div style="font-size:0.6em;font-weight:700;letter-spacing:2px;color:var(--coral);">SOFTWARE ENGINEERING · 120 · $75.24/HR</div>
+            <div style="display:flex;flex-direction:column;gap:0;">
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--ink);border-radius:8px 8px 0 0;">
+                    <div style="padding:5px 10px;font-size:0.62em;font-weight:500;color:rgba(255,255,255,.6);">Use Case</div>
+                    <div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);text-align:center;">Current</div>
+                    <div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);text-align:center;">Future</div>
+                    <div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);text-align:center;">Δ</div>
+                    <div style="padding:5px 6px;font-size:0.62em;color:var(--coral);text-align:center;">Annual</div>
+                    <div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);">Formula</div>
+                </div>
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:4px 10px;font-size:0.7em;">PR review</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">3.0h/PR</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">2.4h</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;color:var(--coral);text-align:center;">−20%</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;text-align:center;">$261K</div><div style="padding:4px 6px;font-size:0.6em;color:var(--ink-faint);">120×2PR/wk×52×0.6h×$75×60%</div></div>
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:4px 10px;font-size:0.7em;">Test generation</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">4.0h</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">1.5h</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;color:var(--coral);text-align:center;">−63%</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;text-align:center;">$262K</div><div style="padding:4px 6px;font-size:0.6em;color:var(--ink-faint);">120×2/wk×52×2.5h×$75×30%</div></div>
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:4px 10px;font-size:0.7em;">Code modernization</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">10wk</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">4d</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;color:var(--coral);text-align:center;">−95%</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;text-align:center;">$159K</div><div style="padding:4px 6px;font-size:0.6em;color:var(--ink-faint);">120×10%×40h×95%×$75</div></div>
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;border-radius:0 0 8px 8px;"><div style="padding:4px 10px;font-size:0.7em;">Tech debt</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">17.3h/wk</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">12h</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;color:var(--coral);text-align:center;">−31%</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;text-align:center;">$96K</div><div style="padding:4px 6px;font-size:0.6em;color:var(--ink-faint);">120×5.3h/wk×52×$75×15%</div></div>
+            </div>
+            <div style="text-align:right;font-size:0.72em;font-weight:700;color:var(--coral);padding-right:8px;">SWE: $778K</div>
+
+            <!-- DS Table -->
+            <div style="font-size:0.6em;font-weight:700;letter-spacing:2px;color:var(--blue-deep);">DATA SCIENCE · 40 · $70.39/HR</div>
+            <div style="display:flex;flex-direction:column;gap:0;">
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--ink);border-radius:8px 8px 0 0;"><div style="padding:5px 10px;font-size:0.62em;color:rgba(255,255,255,.6);">Use Case</div><div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);text-align:center;">Current</div><div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);text-align:center;">Future</div><div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);text-align:center;">Δ</div><div style="padding:5px 6px;font-size:0.62em;color:var(--blue-deep);text-align:center;">Annual</div><div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);">Formula</div></div>
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:4px 10px;font-size:0.7em;">Fraud model iteration</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">2d/iter</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">5h</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;color:var(--coral);text-align:center;">−70%</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;text-align:center;">$96K</div><div style="padding:4px 6px;font-size:0.6em;color:var(--ink-faint);">40×12/yr×11h×$70×50%</div></div>
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:4px 10px;font-size:0.7em;">Notebook → prod</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">3d</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">1d</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;color:var(--coral);text-align:center;">−67%</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;text-align:center;">$41K</div><div style="padding:4px 6px;font-size:0.6em;color:var(--ink-faint);">40×4/yr×16h×$70×40%</div></div>
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;border-radius:0 0 8px 8px;"><div style="padding:4px 10px;font-size:0.7em;">Documentation</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">8h</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">2h</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;color:var(--coral);text-align:center;">−75%</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;text-align:center;">$24K</div><div style="padding:4px 6px;font-size:0.6em;color:var(--ink-faint);">40×6/yr×6h×$70×25%</div></div>
+            </div>
+            <div style="text-align:right;font-size:0.72em;font-weight:700;color:var(--blue-deep);padding-right:8px;">DS: $161K</div>
+
+            <!-- SRE Table -->
+            <div style="font-size:0.6em;font-weight:700;letter-spacing:2px;color:var(--green);">SITE RELIABILITY · 20 · $80.10/HR</div>
+            <div style="display:flex;flex-direction:column;gap:0;">
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--ink);border-radius:8px 8px 0 0;"><div style="padding:5px 10px;font-size:0.62em;color:rgba(255,255,255,.6);">Use Case</div><div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);text-align:center;">Current</div><div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);text-align:center;">Future</div><div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);text-align:center;">Δ</div><div style="padding:5px 6px;font-size:0.62em;color:var(--green);text-align:center;">Annual</div><div style="padding:5px 6px;font-size:0.62em;color:rgba(255,255,255,.6);">Formula</div></div>
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:4px 10px;font-size:0.7em;">Incident triage</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">45 min</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">10 min</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;color:var(--coral);text-align:center;">−78%</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;text-align:center;">$27K</div><div style="padding:4px 6px;font-size:0.6em;color:var(--ink-faint);">20×50/yr×0.58h×$80</div></div>
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--white);border:1px solid var(--cream-dark);border-top:0;"><div style="padding:4px 10px;font-size:0.7em;">Runbook & IaC</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">6h</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">1.5h</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;color:var(--coral);text-align:center;">−75%</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;text-align:center;">$33K</div><div style="padding:4px 6px;font-size:0.6em;color:var(--ink-faint);">20×8/yr×4.5h×$80</div></div>
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 0.7fr 1fr 2.2fr;background:var(--cream-light);border:1px solid var(--cream-dark);border-top:0;border-radius:0 0 8px 8px;"><div style="padding:4px 10px;font-size:0.7em;">Post-mortems</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">4h</div><div style="padding:4px 6px;font-size:0.7em;color:var(--ink-muted);text-align:center;">1h</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;color:var(--coral);text-align:center;">−75%</div><div style="padding:4px 6px;font-size:0.7em;font-weight:600;text-align:center;">$33K</div><div style="padding:4px 6px;font-size:0.6em;color:var(--ink-faint);">20×12/yr×3h×$80</div></div>
+            </div>
+            <div style="text-align:right;font-size:0.72em;font-weight:700;color:var(--green);padding-right:8px;">SRE: $93K</div>
+
+            <!-- Grand total bar -->
+            <div style="background:var(--coral);border-radius:10px;padding:8px 18px;margin-top:2px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:0.82em;font-weight:600;color:var(--white);">Total Productivity Savings</span>
+                <span style="font-family:'Source Serif 4',Georgia,serif;font-size:1.4em;font-weight:700;color:var(--white);">$1,032K</span>
+            </div>
+            <!-- Quality & Risk bar -->
+            <div style="background:var(--green);border-radius:10px;padding:6px 18px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:0.75em;font-weight:600;color:var(--white);">Quality & Risk Savings</span><span style="font-size:0.58em;color:rgba(255,255,255,.6);background:rgba(255,255,255,.15);padding:1px 6px;border-radius:4px;">LOW CONFIDENCE · SUPPLEMENTARY</span></div>
+                <span style="font-family:'Source Serif 4',Georgia,serif;font-size:1.1em;font-weight:700;color:var(--white);">$3,553K</span>
+            </div>
+        </div>
+
+        <!-- Right: Hypotheses & assumptions -->
+        <div style="display:flex;flex-direction:column;gap:10px;padding-left:20px;border-left:1px solid var(--cream-dark);">
+            <div style="font-size:0.7em;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--coral);margin-bottom:2px;">Key Hypotheses</div>
+
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:10px;padding:10px 12px;">
+                <div style="font-size:0.68em;font-weight:700;color:var(--ink);margin-bottom:6px;">Salary Assumptions</div>
+                <div style="font-size:0.68em;color:var(--ink-muted);line-height:1.7;">
+                    SWE: $155K loaded<br>
+                    DS: $145K loaded<br>
+                    SRE: $165K loaded<br>
+                    Hours/yr: 2,060
+                </div>
+            </div>
+
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:10px;padding:10px 12px;">
+                <div style="font-size:0.68em;font-weight:700;color:var(--ink);margin-bottom:6px;">Productivity Assumptions</div>
+                <div style="font-size:0.68em;color:var(--ink-muted);line-height:1.7;">
+                    PR cycle: 3.0h baseline<br>
+                    Improvement: −20%<br>
+                    Utilization: 60%<br>
+                    Rework discount: −15%<br>
+                    PRs/eng/week: 2
+                </div>
+            </div>
+
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:10px;padding:10px 12px;">
+                <div style="font-size:0.68em;font-weight:700;color:var(--ink);margin-bottom:6px;">Scope Discounts</div>
+                <div style="font-size:0.68em;color:var(--ink-muted);line-height:1.7;">
+                    Test gen: 30% of SWE<br>
+                    Modernization: 10% of SWE<br>
+                    Tech debt: 15% addressable<br>
+                    Fraud iteration: 50% of DS<br>
+                    Nb→prod: 40% of DS<br>
+                    Docs: 25% of DS
+                </div>
+            </div>
+
+            <div style="background:var(--cream-light);border:1px solid var(--cream-dark);border-radius:10px;padding:10px 12px;">
+                <div style="font-size:0.68em;font-weight:700;color:var(--ink);margin-bottom:6px;">Sources</div>
+                <div style="font-size:0.65em;color:var(--ink-faint);line-height:1.7;">
+                    McKinsey: 17.3h/wk debt<br>
+                    Stripe: 10K lines / 4 days<br>
+                    CRED: 2× faster, +10% cov<br>
+                    Money Forward: 70% faster<br>
+                    Larridin: 20-40% overstate<br>
+                    Opsera: 15-18% vuln premium
+                </div>
+            </div>
+
+            <div style="background:rgba(217,119,87,0.06);border:1px solid rgba(217,119,87,0.15);border-radius:8px;padding:8px 10px;">
+                <div style="font-size:0.65em;color:var(--coral);line-height:1.5;"><strong>All inputs adjustable</strong> in the <a href="https://docs.google.com/spreadsheets/d/1Q3Gk86U2aS9gvcJk_22Pju823K0pcK-cUa7NrwLtB-w/edit?gid=132597457#gid=132597457" target="_blank" style="color:var(--coral);text-decoration:underline;" onclick="event.stopPropagation();">BVA Calculator ↗</a>. Blue cells = your numbers.</div>
+            </div>
+        </div>
+    </div>
+    <div class="ft"><div class="ft-logo">ANTHROP\C</div><div class="ft-r"><span>CONFIDENTIAL</span></div></div>
+</div>
+
+
+</div>
+<div class="watermark dark" id="watermark">ANTHROP\C</div>
+<div class="slide-counter"><span class="cur" id="current">1</span> / <span id="total">10</span></div>
+<div class="nav-container" id="nav-dots"></div>
+<div class="nav-arrows"><button class="nav-arrow" onclick="changeSlide(-1)">←</button><button class="nav-arrow" onclick="changeSlide(1)">→</button></div>
+<script>
+const slides=document.querySelectorAll('.slide');const MAIN=10;let cur=0;const total=slides.length;
+const navEl=document.getElementById('nav-dots');
+for(let i=0;i<total;i++){
+  if(i===MAIN){const sep=document.createElement('div');sep.className='nav-sep';navEl.appendChild(sep);}
+  const d=document.createElement('div');
+  const isRes=slides[i].dataset.reserve;
+  d.className='nav-dot'+(i===0?' active':'')+(isRes?' reserve':'');
+  d.title=slides[i].dataset.section||'';
+  d.onclick=()=>goToSlide(i);navEl.appendChild(d);
+}
+function updateSlide(){
+  slides.forEach((s,i)=>s.classList.toggle('active',i===cur));
+  document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+  const counterEl=document.getElementById('current');
+  const totalEl=document.getElementById('total');
+  if(cur<MAIN){counterEl.textContent=cur+1;totalEl.textContent=MAIN;}
+  else{counterEl.textContent='R'+(cur-MAIN+1);totalEl.textContent=(total-MAIN);}
+  const wm=document.getElementById('watermark');wm.className='watermark '+(slides[cur].dataset.wm||'dark');
+}
+function changeSlide(dir){cur=(cur+dir+total)%total;updateSlide();}
+function goToSlide(i){cur=i;updateSlide();}
+document.addEventListener('keydown',e=>{if(['ArrowRight',' ','Enter'].includes(e.key)){e.preventDefault();changeSlide(1);}if(e.key==='ArrowLeft')changeSlide(-1);if(e.key.toLowerCase()==='r')goToSlide(MAIN);if(e.key==='Home')goToSlide(0);if(e.key.toLowerCase()==='f')document.documentElement.requestFullscreen?.();});
+updateSlide();
+</script>
+</body>
+</html>
