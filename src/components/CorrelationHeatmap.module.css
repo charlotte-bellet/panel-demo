@@ -90,6 +90,8 @@
   font-family: var(--font-mono);
   letter-spacing: 0.04em;
   color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .colHeader {
@@ -244,3 +246,17 @@
 
 .pos { color: var(--accent-blue); }
 .neg { color: var(--accent-red); }
+
+@media (max-width: 480px) {
+  .wrapper {
+    padding: 16px 12px;
+  }
+
+  .cellVal {
+    font-size: 13px;
+  }
+
+  .pairNames {
+    min-width: 100px;
+  }
+}
